@@ -1,0 +1,128 @@
+from __future__ import annotations
+
+import os
+from typing import List, Optional
+
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QPixmap, QCursor
+from PySide6.QtWidgets import QLabel, QFrame, QVBoxLayout
+
+try:
+    from .scaled_icon_label import ScaledIconLabel
+except Exception:
+    # support loading the module when executed via importlib.spec_from_file_location
+    import importlib.util as _il, os as _os
+    _spec = _il.spec_from_file_location("scaled_icon_label", _os.path.join(_os.path.dirname(__file__), "scaled_icon_label.py"))
+    _mod = _il.module_from_spec(_spec)
+    _spec.loader.exec_module(_mod)
+    ScaledIconLabel = _mod.ScaledIconLabel
+
+try:
+    from . import icon_loader
+except Exception:
+    import importlib.util as _il, os as _os
+    _spec = _il.spec_from_file_location("icon_loader", _os.path.join(_os.path.dirname(__file__), "icon_loader.py"))
+    _mod = _il.module_from_spec(_spec)
+    _spec.loader.exec_module(_mod)
+    icon_loader = _mod
+
+
+class FrameButtonWidget(QFrame):
+    """Interactive frame that behaves like a button with icon, title and info.
+
+    Uses `ScaledIconLabel` and `icon_loader` to resolve and load icons from
+    a list of `icon_dirs` with a placeholder fallback.
+    """
+
+    clicked = Signal()
+
+    def __init__(self, icon_path: Optional[str] = None, title: str = "", info: str = "",
+                 parent=None, icon_dirs: Optional[List[str]] = None, max_size: int = 512):
+        super().__init__(parent)
+        self.setCursor(QCursor(Qt.PointingHandCursor))
+        self.setObjectName("FrameButtonWidget")
+        self.icon_dirs = icon_dirs or []
+        self.max_size = max_size
+
+        self.icon = ScaledIconLabel(max_size=self.max_size, parent=self)
+        # Use nonlinear scaling: base 96px but accelerated growth (power 2.0)
+        self.icon = ScaledIconLabel(max_size=self.max_size, parent=self, base_size=128, scale_power=2.0)
+        self.title = QLabel(title, parent=self)
+        self.info = QLabel(info, parent=self)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(6)
+        layout.addWidget(self.icon, 1)
+        layout.addWidget(self.title, 0)
+        layout.addWidget(self.info, 0)
+
+        if icon_path:
+            pix = self._load_pix(icon_path)
+            if pix and not pix.isNull():
+                self.icon.setPixmap(pix)
+
+    def mousePressEvent(self, event):
+        super().mousePressEvent(event)
+        self.clicked.emit()
+
+    def _load_pix(self, rel_path: str) -> QPixmap:
+        # Prefer explicit resolution so we can surface useful diagnostics
+        base = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
+
+        # 1) If icon_loader exposes resolve_icon_path, try that first
+        resolved = None
+        try:
+            if hasattr(icon_loader, 'resolve_icon_path'):
+                resolved = icon_loader.resolve_icon_path(self.icon_dirs, rel_path)
+                if resolved and os.path.exists(resolved):
+                    return QPixmap(resolved)
+        except Exception as e:
+            print(f"[FrameButtonWidget] resolve_icon_path error: {e}")
+
+        # 2) Try icon_loader.load_qpixmap which may handle SVG/QIcon internals
+        try:
+            pix = icon_loader.load_qpixmap(rel_path, icon_dirs=self.icon_dirs)
+            if pix and not pix.isNull():
+                return pix
+        except Exception as e:
+            print(f"[FrameButtonWidget] load_qpixmap error: {e}")
+
+        # 3) If rel_path is absolute, try it directly
+        if os.path.isabs(rel_path) and os.path.exists(rel_path):
+            return QPixmap(rel_path)
+
+        # 4) Try several plausible candidates relative to known locations
+        candidates = [
+            os.path.normpath(os.path.join(base, 'icons', rel_path)),
+            os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'assets', 'branding', rel_path)),
+            os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'assets', 'icons', rel_path)),
+            os.path.normpath(rel_path),
+        ]
+        for p in candidates:
+            if os.path.exists(p):
+                try:
+                    return QPixmap(p)
+                except Exception:
+                    pass
+
+        # 5) Fallback to package placeholder if present
+        placeholder = os.path.join(base, 'icons', 'placeholder.svg')
+        if os.path.exists(placeholder):
+            print(f"[FrameButtonWidget] icon not found: {rel_path!r}. Using placeholder. Candidates checked: {candidates}")
+            return QPixmap(placeholder)
+
+        # 6) Nothing found — emit diagnostic and return empty pixmap
+        print(f"[FrameButtonWidget] icon not found: {rel_path!r}. Candidates checked: {candidates}")
+        return QPixmap()
+
+    def setTitle(self, text: str):
+        self.title.setText(text)
+
+    def setInfo(self, text: str):
+        self.info.setText(text)
+
+    def setIcon(self, path: str):
+        pix = self._load_pix(path)
+        if pix and not pix.isNull():
+            self.icon.setPixmap(pix)

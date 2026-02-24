@@ -18,9 +18,25 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
     QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout,
     QWidget)
+import importlib.util
+import os
+
+
+def _resolve_icon(icon_dirs, rel_path):
+    if not icon_dirs:
+        return rel_path
+    # accept either single path or iterable
+    if isinstance(icon_dirs, (list, tuple)):
+        for base in icon_dirs:
+            cand = os.path.normpath(os.path.join(base, rel_path))
+            if os.path.exists(cand):
+                return cand
+        return rel_path
+    else:
+        return os.path.normpath(os.path.join(icon_dirs, rel_path))
 
 class Ui_Widget(object):
-    def setupUi(self, Widget):
+    def setupUi(self, Widget, icon_dirs=None):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
         Widget.resize(1209, 677)
@@ -31,7 +47,8 @@ class Ui_Widget(object):
         Widget.setSizePolicy(sizePolicy)
         Widget.setMinimumSize(QSize(670, 550))
         icon = QIcon()
-        icon.addFile(u"icons/logo.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon_path = _resolve_icon(icon_dirs, os.path.join('logo.svg'))
+        icon.addFile(icon_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         Widget.setWindowIcon(icon)
         self.horizontalLayout = QHBoxLayout(Widget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -113,127 +130,55 @@ class Ui_Widget(object):
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.FRAMENew = QFrame(Widget)
+        # instantiate reusable FrameButtonWidget from utils/frame_button.py
+        utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "utils", "frame_button.py"))
+        spec = importlib.util.spec_from_file_location("frame_button", utils_path)
+        frame_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(frame_mod)
+        FrameButtonWidget = frame_mod.FrameButtonWidget
+
+        self.FRAMENew = FrameButtonWidget(icon_path=_resolve_icon(icon_dirs, os.path.join('new', 'default.svg')), title="", info="", parent=Widget)
         self.FRAMENew.setObjectName(u"FRAMENew")
-        self.FRAMENew.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.FRAMENew.setAutoFillBackground(True)
-        self.FRAMENew.setFrameShape(QFrame.Shape.Box)
-        self.FRAMENew.setFrameShadow(QFrame.Shadow.Plain)
-        self.FRAMENew.setLineWidth(1)
-        self.verticalLayout_3 = QVBoxLayout(self.FRAMENew)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.ICONNew = QLabel(self.FRAMENew)
-        self.ICONNew.setObjectName(u"ICONNew")
-        sizePolicy2 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
-        sizePolicy2.setHorizontalStretch(32)
-        sizePolicy2.setVerticalStretch(0)
-        sizePolicy2.setHeightForWidth(self.ICONNew.sizePolicy().hasHeightForWidth())
-        self.ICONNew.setSizePolicy(sizePolicy2)
-        self.ICONNew.setMaximumSize(QSize(256, 256))
-        self.ICONNew.setPixmap(QPixmap(u"icons/nes.svg"))
-        self.ICONNew.setScaledContents(True)
-        self.ICONNew.setWordWrap(False)
-
-        self.verticalLayout_3.addWidget(self.ICONNew)
-
-        self.LABELTitleNew = QLabel(self.FRAMENew)
-        self.LABELTitleNew.setObjectName(u"LABELTitleNew")
-        sizePolicy1.setHeightForWidth(self.LABELTitleNew.sizePolicy().hasHeightForWidth())
-        self.LABELTitleNew.setSizePolicy(sizePolicy1)
-        font2 = QFont()
-        font2.setBold(True)
-        self.LABELTitleNew.setFont(font2)
-
-        self.verticalLayout_3.addWidget(self.LABELTitleNew)
-
-        self.LABELInfoNew = QLabel(self.FRAMENew)
-        self.LABELInfoNew.setObjectName(u"LABELInfoNew")
-        sizePolicy1.setHeightForWidth(self.LABELInfoNew.sizePolicy().hasHeightForWidth())
-        self.LABELInfoNew.setSizePolicy(sizePolicy1)
-        self.LABELInfoNew.setWordWrap(True)
-
-        self.verticalLayout_3.addWidget(self.LABELInfoNew)
-
-
+        # provide compatibility attributes used elsewhere
+        self.ICONNew = self.FRAMENew.icon
+        self.LABELTitleNew = self.FRAMENew.title
+        self.LABELInfoNew = self.FRAMENew.info
         self.horizontalLayout_2.addWidget(self.FRAMENew)
 
         self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_3)
 
-        self.FRAMEOpen = QFrame(Widget)
+        # FRAMEOpen -> FrameButtonWidget
+        utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "utils", "frame_button.py"))
+        spec = importlib.util.spec_from_file_location("frame_button", utils_path)
+        frame_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(frame_mod)
+        FrameButtonWidget = frame_mod.FrameButtonWidget
+
+        self.FRAMEOpen = FrameButtonWidget(icon_path=_resolve_icon(icon_dirs, os.path.join('load', 'default.svg')), title="", info="", parent=Widget)
         self.FRAMEOpen.setObjectName(u"FRAMEOpen")
-        self.FRAMEOpen.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.FRAMEOpen.setAutoFillBackground(True)
-        self.FRAMEOpen.setFrameShape(QFrame.Shape.Box)
-        self.verticalLayout_4 = QVBoxLayout(self.FRAMEOpen)
-        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.ICONOpen = QLabel(self.FRAMEOpen)
-        self.ICONOpen.setObjectName(u"ICONOpen")
-        self.ICONOpen.setMaximumSize(QSize(256, 256))
-        self.ICONOpen.setPixmap(QPixmap(u"icons/open.svg"))
-        self.ICONOpen.setScaledContents(True)
-
-        self.verticalLayout_4.addWidget(self.ICONOpen)
-
-        self.LABELTitleOpen = QLabel(self.FRAMEOpen)
-        self.LABELTitleOpen.setObjectName(u"LABELTitleOpen")
-        sizePolicy1.setHeightForWidth(self.LABELTitleOpen.sizePolicy().hasHeightForWidth())
-        self.LABELTitleOpen.setSizePolicy(sizePolicy1)
-        font3 = QFont()
-        font3.setBold(True)
-        font3.setItalic(False)
-        self.LABELTitleOpen.setFont(font3)
-
-        self.verticalLayout_4.addWidget(self.LABELTitleOpen)
-
-        self.LABELInfoOpen = QLabel(self.FRAMEOpen)
-        self.LABELInfoOpen.setObjectName(u"LABELInfoOpen")
-        sizePolicy1.setHeightForWidth(self.LABELInfoOpen.sizePolicy().hasHeightForWidth())
-        self.LABELInfoOpen.setSizePolicy(sizePolicy1)
-        self.LABELInfoOpen.setWordWrap(True)
-
-        self.verticalLayout_4.addWidget(self.LABELInfoOpen)
-
-
+        self.ICONOpen = self.FRAMEOpen.icon
+        self.LABELTitleOpen = self.FRAMEOpen.title
+        self.LABELInfoOpen = self.FRAMEOpen.info
         self.horizontalLayout_2.addWidget(self.FRAMEOpen)
 
         self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_4)
 
-        self.FRAMEClone = QFrame(Widget)
+        # FRAMEClone -> FrameButtonWidget
+        utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "utils", "frame_button.py"))
+        spec = importlib.util.spec_from_file_location("frame_button", utils_path)
+        frame_mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(frame_mod)
+        FrameButtonWidget = frame_mod.FrameButtonWidget
+
+        self.FRAMEClone = FrameButtonWidget(icon_path=_resolve_icon(icon_dirs, os.path.join('arrows', 'down.svg')), title="", info="", parent=Widget)
         self.FRAMEClone.setObjectName(u"FRAMEClone")
-        self.FRAMEClone.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.FRAMEClone.setAutoFillBackground(True)
-        self.FRAMEClone.setFrameShape(QFrame.Shape.Box)
-        self.verticalLayout_5 = QVBoxLayout(self.FRAMEClone)
-        self.verticalLayout_5.setObjectName(u"verticalLayout_5")
-        self.ICONClone = QLabel(self.FRAMEClone)
-        self.ICONClone.setObjectName(u"ICONClone")
-        self.ICONClone.setMaximumSize(QSize(256, 256))
-        self.ICONClone.setPixmap(QPixmap(u"icons/clone.svg"))
-        self.ICONClone.setScaledContents(True)
-
-        self.verticalLayout_5.addWidget(self.ICONClone)
-
-        self.LABELTitleClone = QLabel(self.FRAMEClone)
-        self.LABELTitleClone.setObjectName(u"LABELTitleClone")
-        sizePolicy1.setHeightForWidth(self.LABELTitleClone.sizePolicy().hasHeightForWidth())
-        self.LABELTitleClone.setSizePolicy(sizePolicy1)
-        self.LABELTitleClone.setFont(font2)
-
-        self.verticalLayout_5.addWidget(self.LABELTitleClone)
-
-        self.LABELInfoClone = QLabel(self.FRAMEClone)
-        self.LABELInfoClone.setObjectName(u"LABELInfoClone")
-        sizePolicy1.setHeightForWidth(self.LABELInfoClone.sizePolicy().hasHeightForWidth())
-        self.LABELInfoClone.setSizePolicy(sizePolicy1)
-        self.LABELInfoClone.setWordWrap(True)
-
-        self.verticalLayout_5.addWidget(self.LABELInfoClone)
-
-
+        self.ICONClone = self.FRAMEClone.icon
+        self.LABELTitleClone = self.FRAMEClone.title
+        self.LABELInfoClone = self.FRAMEClone.info
         self.horizontalLayout_2.addWidget(self.FRAMEClone)
 
 
