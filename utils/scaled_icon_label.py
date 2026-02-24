@@ -21,7 +21,7 @@ class ScaledIconLabel(QLabel):
     """
 
     def __init__(self, parent=None, max_size: Optional[int] = 256, base_size: int = 128, scale_power: float = 1.0,
-                 window_influence: float = 0.6, window_scale_factor: float = 0.25):
+                 window_influence: float = 0.9, window_scale_factor: float = 0.45):
         super().__init__(parent)
         self._original = QPixmap()
         self.max_size = max_size or 0
@@ -85,11 +85,11 @@ class ScaledIconLabel(QLabel):
         try:
             tw = win.width()
             th = win.height()
-            if 670 < tw < 1200 and 550 < th < 680:
+            if tw < 1200 and th < 680:
                 override_target = 96
-            elif 1199 < tw <= 1500 and th >= 699:
+            elif 1200 <= tw <= 1500 and 680 <= th <= 750:
                 override_target = 256
-            elif tw > 1500 and th > 700:
+            elif tw > 1500 and th > 750:
                 override_target = 384
         except Exception:
             override_target = None

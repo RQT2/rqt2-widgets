@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'form.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.2
+## Created by: Qt User Interface Compiler version 6.9.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -19,21 +19,64 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QDoubleSpinBox, QFrame,
     QGroupBox, QHBoxLayout, QLabel, QLayout,
     QLineEdit, QPushButton, QScrollArea, QSizePolicy,
     QSpacerItem, QTabWidget, QVBoxLayout, QWidget)
+import importlib.util
+import os
+
+# load icon helper from utils/icon_loader if available
+load_qicon = None
+load_qpixmap = None
+placeholder = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'icons', 'placeholder.svg'))
+try:
+    _il_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'icon_loader.py'))
+    spec = importlib.util.spec_from_file_location('icon_loader', _il_path)
+    _il = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(_il)
+    load_qicon = _il.load_qicon
+    load_qpixmap = _il.load_qpixmap
+    _resolve_icon = _il._resolve_icon
+except Exception:
+    def load_qicon(rel_path, icon_dirs=None, fallback=None):
+        ico = QIcon()
+        try:
+            ico.addFile(rel_path)
+        except Exception:
+            pass
+        return ico
+
+    def load_qpixmap(rel_path, icon_dirs=None, fallback=None):
+        pix = QPixmap()
+        try:
+            pix.load(rel_path)
+        except Exception:
+            pass
+        return pix
+
+    def _resolve_icon(icon_dirs, rel_path):
+        if not icon_dirs:
+            return rel_path
+        if isinstance(icon_dirs, (list, tuple)):
+            for base in icon_dirs:
+                cand = os.path.normpath(os.path.join(base, rel_path))
+                if os.path.exists(cand):
+                    return cand
+            return rel_path
+        else:
+            return os.path.normpath(os.path.join(icon_dirs, rel_path))
 
 class Ui_Widget(object):
-    def setupUi(self, Widget):
+    def setupUi(self, Widget, icon_dirs=None):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
-        Widget.resize(730, 870)
+        Widget.resize(780, 870)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Widget.sizePolicy().hasHeightForWidth())
         Widget.setSizePolicy(sizePolicy)
-        Widget.setMinimumSize(QSize(730, 870))
+        Widget.setMinimumSize(QSize(780, 870))
         icon = QIcon()
-        icon.addFile(u"icons/logo.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        Widget.setWindowIcon(icon)
+        icon_path = _resolve_icon(icon_dirs, os.path.join('logo.svg'))
+        icon.addFile(icon_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.verticalLayout_17 = QVBoxLayout(Widget)
         self.verticalLayout_17.setObjectName(u"verticalLayout_17")
         self.horizontalLayout_10 = QHBoxLayout()
@@ -90,7 +133,8 @@ class Ui_Widget(object):
         self.BTNPKGNew = QPushButton(Widget)
         self.BTNPKGNew.setObjectName(u"BTNPKGNew")
         icon1 = QIcon()
-        icon1.addFile(u"icons/nes.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon1_path = _resolve_icon(icon_dirs, os.path.join('new', 'default.svg'))
+        icon1.addFile(icon1_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNPKGNew.setIcon(icon1)
 
         self.horizontalLayout_8.addWidget(self.BTNPKGNew)
@@ -100,39 +144,60 @@ class Ui_Widget(object):
 
         self.TABPKGNew = QTabWidget(Widget)
         self.TABPKGNew.setObjectName(u"TABPKGNew")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
         sizePolicy4.setHorizontalStretch(0)
         sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.TABPKGNew.sizePolicy().hasHeightForWidth())
         self.TABPKGNew.setSizePolicy(sizePolicy4)
-        self.tab = QWidget()
-        self.tab.setObjectName(u"tab")
-        self.verticalLayout_4 = QVBoxLayout(self.tab)
+        self.TAB_my_pkg = QWidget()
+        self.TAB_my_pkg.setObjectName(u"TAB_my_pkg")
+        self.verticalLayout_4 = QVBoxLayout(self.TAB_my_pkg)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
-        self.LABELPKGInfo = QLabel(self.tab)
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.LABELPKGInfo = QLabel(self.TAB_my_pkg)
         self.LABELPKGInfo.setObjectName(u"LABELPKGInfo")
 
-        self.verticalLayout_4.addWidget(self.LABELPKGInfo)
+        self.horizontalLayout.addWidget(self.LABELPKGInfo)
 
-        self.scrollArea = QScrollArea(self.tab)
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.BTNDel_my_pkg = QPushButton(self.TAB_my_pkg)
+        self.BTNDel_my_pkg.setObjectName(u"BTNDel_my_pkg")
+        icon_del_pkg = QIcon()
+        icon_del_pkg_path = _resolve_icon(icon_dirs, os.path.join('close', 'default.svg'))
+        icon_del_pkg.addFile(icon_del_pkg_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        self.BTNDel_my_pkg.setIcon(icon_del_pkg)
+
+        self.horizontalLayout.addWidget(self.BTNDel_my_pkg)
+
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout)
+
+        self.scrollArea = QScrollArea(self.TAB_my_pkg)
         self.scrollArea.setObjectName(u"scrollArea")
-        sizePolicy4.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
-        self.scrollArea.setSizePolicy(sizePolicy4)
+        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy5.setHorizontalStretch(0)
+        sizePolicy5.setVerticalStretch(0)
+        sizePolicy5.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
+        self.scrollArea.setSizePolicy(sizePolicy5)
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 688, 510))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, -68, 725, 486))
         self.verticalLayout_2 = QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.horizontalLayout_15 = QHBoxLayout()
         self.horizontalLayout_15.setObjectName(u"horizontalLayout_15")
         self.LABELPKGDescription = QLabel(self.scrollAreaWidgetContents)
         self.LABELPKGDescription.setObjectName(u"LABELPKGDescription")
-        sizePolicy5 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
-        sizePolicy5.setHorizontalStretch(0)
-        sizePolicy5.setVerticalStretch(0)
-        sizePolicy5.setHeightForWidth(self.LABELPKGDescription.sizePolicy().hasHeightForWidth())
-        self.LABELPKGDescription.setSizePolicy(sizePolicy5)
+        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        sizePolicy6.setHorizontalStretch(0)
+        sizePolicy6.setVerticalStretch(0)
+        sizePolicy6.setHeightForWidth(self.LABELPKGDescription.sizePolicy().hasHeightForWidth())
+        self.LABELPKGDescription.setSizePolicy(sizePolicy6)
         self.LABELPKGDescription.setWordWrap(True)
 
         self.horizontalLayout_15.addWidget(self.LABELPKGDescription)
@@ -144,8 +209,8 @@ class Ui_Widget(object):
 
         self.LABELPKGLicense = QLabel(self.scrollAreaWidgetContents)
         self.LABELPKGLicense.setObjectName(u"LABELPKGLicense")
-        sizePolicy5.setHeightForWidth(self.LABELPKGLicense.sizePolicy().hasHeightForWidth())
-        self.LABELPKGLicense.setSizePolicy(sizePolicy5)
+        sizePolicy6.setHeightForWidth(self.LABELPKGLicense.sizePolicy().hasHeightForWidth())
+        self.LABELPKGLicense.setSizePolicy(sizePolicy6)
         self.LABELPKGLicense.setWordWrap(True)
 
         self.horizontalLayout_15.addWidget(self.LABELPKGLicense)
@@ -161,11 +226,11 @@ class Ui_Widget(object):
         self.CBPKGLicense.addItem("")
         self.CBPKGLicense.addItem("")
         self.CBPKGLicense.setObjectName(u"CBPKGLicense")
-        sizePolicy6 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
-        sizePolicy6.setHorizontalStretch(0)
-        sizePolicy6.setVerticalStretch(0)
-        sizePolicy6.setHeightForWidth(self.CBPKGLicense.sizePolicy().hasHeightForWidth())
-        self.CBPKGLicense.setSizePolicy(sizePolicy6)
+        sizePolicy7 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
+        sizePolicy7.setHorizontalStretch(0)
+        sizePolicy7.setVerticalStretch(0)
+        sizePolicy7.setHeightForWidth(self.CBPKGLicense.sizePolicy().hasHeightForWidth())
+        self.CBPKGLicense.setSizePolicy(sizePolicy7)
 
         self.horizontalLayout_15.addWidget(self.CBPKGLicense)
 
@@ -174,8 +239,8 @@ class Ui_Widget(object):
 
         self.GROUPPKGConf = QGroupBox(self.scrollAreaWidgetContents)
         self.GROUPPKGConf.setObjectName(u"GROUPPKGConf")
-        sizePolicy5.setHeightForWidth(self.GROUPPKGConf.sizePolicy().hasHeightForWidth())
-        self.GROUPPKGConf.setSizePolicy(sizePolicy5)
+        sizePolicy6.setHeightForWidth(self.GROUPPKGConf.sizePolicy().hasHeightForWidth())
+        self.GROUPPKGConf.setSizePolicy(sizePolicy6)
         self.horizontalLayout_5 = QHBoxLayout(self.GROUPPKGConf)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.frame = QFrame(self.GROUPPKGConf)
@@ -208,11 +273,11 @@ class Ui_Widget(object):
 
         self.INFOPKGAment = QLabel(self.frame)
         self.INFOPKGAment.setObjectName(u"INFOPKGAment")
-        sizePolicy7 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        sizePolicy7.setHorizontalStretch(0)
-        sizePolicy7.setVerticalStretch(0)
-        sizePolicy7.setHeightForWidth(self.INFOPKGAment.sizePolicy().hasHeightForWidth())
-        self.INFOPKGAment.setSizePolicy(sizePolicy7)
+        sizePolicy8 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        sizePolicy8.setHorizontalStretch(0)
+        sizePolicy8.setVerticalStretch(0)
+        sizePolicy8.setHeightForWidth(self.INFOPKGAment.sizePolicy().hasHeightForWidth())
+        self.INFOPKGAment.setSizePolicy(sizePolicy8)
         font = QFont()
         font.setItalic(True)
         self.INFOPKGAment.setFont(font)
@@ -267,8 +332,8 @@ class Ui_Widget(object):
 
         self.GROUPMainteiner = QGroupBox(self.scrollAreaWidgetContents)
         self.GROUPMainteiner.setObjectName(u"GROUPMainteiner")
-        sizePolicy5.setHeightForWidth(self.GROUPMainteiner.sizePolicy().hasHeightForWidth())
-        self.GROUPMainteiner.setSizePolicy(sizePolicy5)
+        sizePolicy6.setHeightForWidth(self.GROUPMainteiner.sizePolicy().hasHeightForWidth())
+        self.GROUPMainteiner.setSizePolicy(sizePolicy6)
         self.verticalLayout_12 = QVBoxLayout(self.GROUPMainteiner)
         self.verticalLayout_12.setObjectName(u"verticalLayout_12")
         self.horizontalLayout_11 = QHBoxLayout()
@@ -303,11 +368,11 @@ class Ui_Widget(object):
 
         self.GROUPConf = QGroupBox(self.scrollAreaWidgetContents)
         self.GROUPConf.setObjectName(u"GROUPConf")
-        sizePolicy8 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.MinimumExpanding)
-        sizePolicy8.setHorizontalStretch(0)
-        sizePolicy8.setVerticalStretch(0)
-        sizePolicy8.setHeightForWidth(self.GROUPConf.sizePolicy().hasHeightForWidth())
-        self.GROUPConf.setSizePolicy(sizePolicy8)
+        sizePolicy9 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy9.setHorizontalStretch(0)
+        sizePolicy9.setVerticalStretch(0)
+        sizePolicy9.setHeightForWidth(self.GROUPConf.sizePolicy().hasHeightForWidth())
+        self.GROUPConf.setSizePolicy(sizePolicy9)
         self.verticalLayout_8 = QVBoxLayout(self.GROUPConf)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
         self.horizontalLayout_12 = QHBoxLayout()
@@ -322,11 +387,8 @@ class Ui_Widget(object):
 
         self.EDITPKGDir = QLineEdit(self.GROUPConf)
         self.EDITPKGDir.setObjectName(u"EDITPKGDir")
-        sizePolicy9 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
-        sizePolicy9.setHorizontalStretch(0)
-        sizePolicy9.setVerticalStretch(0)
-        sizePolicy9.setHeightForWidth(self.EDITPKGDir.sizePolicy().hasHeightForWidth())
-        self.EDITPKGDir.setSizePolicy(sizePolicy9)
+        sizePolicy4.setHeightForWidth(self.EDITPKGDir.sizePolicy().hasHeightForWidth())
+        self.EDITPKGDir.setSizePolicy(sizePolicy4)
 
         self.horizontalLayout_12.addWidget(self.EDITPKGDir)
 
@@ -382,28 +444,44 @@ class Ui_Widget(object):
         self.FRAMEPKGAdded.setFrameShadow(QFrame.Shadow.Raised)
         self.verticalLayout_14 = QVBoxLayout(self.FRAMEPKGAdded)
         self.verticalLayout_14.setObjectName(u"verticalLayout_14")
-        self.LAYOUTPKGAdded = QHBoxLayout()
-        self.LAYOUTPKGAdded.setObjectName(u"LAYOUTPKGAdded")
-        self.LABELPKGAdded = QLabel(self.FRAMEPKGAdded)
-        self.LABELPKGAdded.setObjectName(u"LABELPKGAdded")
-        sizePolicy11 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
-        sizePolicy11.setHorizontalStretch(0)
-        sizePolicy11.setVerticalStretch(0)
-        sizePolicy11.setHeightForWidth(self.LABELPKGAdded.sizePolicy().hasHeightForWidth())
-        self.LABELPKGAdded.setSizePolicy(sizePolicy11)
+        # try to use RemovableItemWidget for added packages
+        try:
+            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
+            spec = importlib.util.spec_from_file_location('removable_item', utils_path)
+            rem_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(rem_mod)
+            RemovableItemWidget = rem_mod.RemovableItemWidget
 
-        self.LAYOUTPKGAdded.addWidget(self.LABELPKGAdded)
+            self.LAYOUTPKGAdded = QHBoxLayout()
+            self.LAYOUTPKGAdded.setObjectName(u"LAYOUTPKGAdded")
+            sample = RemovableItemWidget(text="rlcpp", parent=self.FRAMEPKGAdded, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg')))
+            self.LABELPKGAdded = sample.label
+            self.BTNPKGAdded = sample.button
+            self.LAYOUTPKGAdded.addWidget(sample)
+            self.verticalLayout_14.addLayout(self.LAYOUTPKGAdded)
+        except Exception:
+            self.LAYOUTPKGAdded = QHBoxLayout()
+            self.LAYOUTPKGAdded.setObjectName(u"LAYOUTPKGAdded")
+            self.LABELPKGAdded = QLabel(self.FRAMEPKGAdded)
+            self.LABELPKGAdded.setObjectName(u"LABELPKGAdded")
+            sizePolicy11 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+            sizePolicy11.setHorizontalStretch(0)
+            sizePolicy11.setVerticalStretch(0)
+            sizePolicy11.setHeightForWidth(self.LABELPKGAdded.sizePolicy().hasHeightForWidth())
+            self.LABELPKGAdded.setSizePolicy(sizePolicy11)
 
-        self.BTNPKGAdded = QPushButton(self.FRAMEPKGAdded)
-        self.BTNPKGAdded.setObjectName(u"BTNPKGAdded")
-        icon3 = QIcon()
-        icon3.addFile(u"icons/close.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.BTNPKGAdded.setIcon(icon3)
+            self.LAYOUTPKGAdded.addWidget(self.LABELPKGAdded)
 
-        self.LAYOUTPKGAdded.addWidget(self.BTNPKGAdded)
+            self.BTNPKGAdded = QPushButton(self.FRAMEPKGAdded)
+            self.BTNPKGAdded.setObjectName(u"BTNPKGAdded")
+            icon3 = QIcon()
+            icon3_path = _resolve_icon(icon_dirs, os.path.join('close', 'default.svg'))
+            icon3.addFile(icon3_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+            self.BTNPKGAdded.setIcon(icon3)
 
+            self.LAYOUTPKGAdded.addWidget(self.BTNPKGAdded)
 
-        self.verticalLayout_14.addLayout(self.LAYOUTPKGAdded)
+            self.verticalLayout_14.addLayout(self.LAYOUTPKGAdded)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -428,7 +506,7 @@ class Ui_Widget(object):
         self.horizontalLayout_26 = QHBoxLayout()
         self.horizontalLayout_26.setObjectName(u"horizontalLayout_26")
         self.horizontalLayout_26.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
-        self.GROUPNode = QGroupBox(self.tab)
+        self.GROUPNode = QGroupBox(self.TAB_my_pkg)
         self.GROUPNode.setObjectName(u"GROUPNode")
         sizePolicy12 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
         sizePolicy12.setHorizontalStretch(0)
@@ -470,26 +548,41 @@ class Ui_Widget(object):
         self.FRAMENODEAdded.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 315, 90))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 340, 92))
         self.verticalLayout_16 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_16.setObjectName(u"verticalLayout_16")
-        self.LAYOUTNODEAdded = QHBoxLayout()
-        self.LAYOUTNODEAdded.setObjectName(u"LAYOUTNODEAdded")
-        self.LABELNODEAdded = QLabel(self.scrollAreaWidgetContents_2)
-        self.LABELNODEAdded.setObjectName(u"LABELNODEAdded")
-        sizePolicy11.setHeightForWidth(self.LABELNODEAdded.sizePolicy().hasHeightForWidth())
-        self.LABELNODEAdded.setSizePolicy(sizePolicy11)
+        # try RemovableItemWidget for node entries
+        try:
+            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
+            spec = importlib.util.spec_from_file_location('removable_item', utils_path)
+            rem_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(rem_mod)
+            RemovableItemWidget = rem_mod.RemovableItemWidget
 
-        self.LAYOUTNODEAdded.addWidget(self.LABELNODEAdded)
+            self.LAYOUTNODEAdded = QHBoxLayout()
+            self.LAYOUTNODEAdded.setObjectName(u"LAYOUTNODEAdded")
+            sample = RemovableItemWidget(text="my_node.py", parent=self.scrollAreaWidgetContents_2, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg')))
+            self.LABELNODEAdded = sample.label
+            self.BTNNODEAdded = sample.button
+            self.LAYOUTNODEAdded.addWidget(sample)
+            self.verticalLayout_16.addLayout(self.LAYOUTNODEAdded)
+        except Exception:
+            self.LAYOUTNODEAdded = QHBoxLayout()
+            self.LAYOUTNODEAdded.setObjectName(u"LAYOUTNODEAdded")
+            self.LABELNODEAdded = QLabel(self.scrollAreaWidgetContents_2)
+            self.LABELNODEAdded.setObjectName(u"LABELNODEAdded")
+            sizePolicy11.setHeightForWidth(self.LABELNODEAdded.sizePolicy().hasHeightForWidth())
+            self.LABELNODEAdded.setSizePolicy(sizePolicy11)
 
-        self.BTNNODEAdded = QPushButton(self.scrollAreaWidgetContents_2)
-        self.BTNNODEAdded.setObjectName(u"BTNNODEAdded")
-        self.BTNNODEAdded.setIcon(icon3)
+            self.LAYOUTNODEAdded.addWidget(self.LABELNODEAdded)
 
-        self.LAYOUTNODEAdded.addWidget(self.BTNNODEAdded)
+            self.BTNNODEAdded = QPushButton(self.scrollAreaWidgetContents_2)
+            self.BTNNODEAdded.setObjectName(u"BTNNODEAdded")
+            self.BTNNODEAdded.setIcon(icon3)
 
+            self.LAYOUTNODEAdded.addWidget(self.BTNNODEAdded)
 
-        self.verticalLayout_16.addLayout(self.LAYOUTNODEAdded)
+            self.verticalLayout_16.addLayout(self.LAYOUTNODEAdded)
 
         self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -502,7 +595,7 @@ class Ui_Widget(object):
 
         self.horizontalLayout_26.addWidget(self.GROUPNode)
 
-        self.GROUPLaunch = QGroupBox(self.tab)
+        self.GROUPLaunch = QGroupBox(self.TAB_my_pkg)
         self.GROUPLaunch.setObjectName(u"GROUPLaunch")
         self.verticalLayout_15 = QVBoxLayout(self.GROUPLaunch)
         self.verticalLayout_15.setObjectName(u"verticalLayout_15")
@@ -539,26 +632,41 @@ class Ui_Widget(object):
         self.FRAMELAUNCHAdd.setWidgetResizable(True)
         self.scrollAreaWidgetContents_3 = QWidget()
         self.scrollAreaWidgetContents_3.setObjectName(u"scrollAreaWidgetContents_3")
-        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 315, 90))
+        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 340, 92))
         self.verticalLayout_13 = QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_13.setObjectName(u"verticalLayout_13")
-        self.LAYOUTLAUNCHAdded = QHBoxLayout()
-        self.LAYOUTLAUNCHAdded.setObjectName(u"LAYOUTLAUNCHAdded")
-        self.LABELLAUNCHAdded = QLabel(self.scrollAreaWidgetContents_3)
-        self.LABELLAUNCHAdded.setObjectName(u"LABELLAUNCHAdded")
-        sizePolicy11.setHeightForWidth(self.LABELLAUNCHAdded.sizePolicy().hasHeightForWidth())
-        self.LABELLAUNCHAdded.setSizePolicy(sizePolicy11)
+        # try RemovableItemWidget for launch entries
+        try:
+            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
+            spec = importlib.util.spec_from_file_location('removable_item', utils_path)
+            rem_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(rem_mod)
+            RemovableItemWidget = rem_mod.RemovableItemWidget
 
-        self.LAYOUTLAUNCHAdded.addWidget(self.LABELLAUNCHAdded)
+            self.LAYOUTLAUNCHAdded = QHBoxLayout()
+            self.LAYOUTLAUNCHAdded.setObjectName(u"LAYOUTLAUNCHAdded")
+            sample = RemovableItemWidget(text="my_launcher.python.py", parent=self.scrollAreaWidgetContents_3, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg')))
+            self.LABELLAUNCHAdded = sample.label
+            self.BTNLAUNCHAdded = sample.button
+            self.LAYOUTLAUNCHAdded.addWidget(sample)
+            self.verticalLayout_13.addLayout(self.LAYOUTLAUNCHAdded)
+        except Exception:
+            self.LAYOUTLAUNCHAdded = QHBoxLayout()
+            self.LAYOUTLAUNCHAdded.setObjectName(u"LAYOUTLAUNCHAdded")
+            self.LABELLAUNCHAdded = QLabel(self.scrollAreaWidgetContents_3)
+            self.LABELLAUNCHAdded.setObjectName(u"LABELLAUNCHAdded")
+            sizePolicy11.setHeightForWidth(self.LABELLAUNCHAdded.sizePolicy().hasHeightForWidth())
+            self.LABELLAUNCHAdded.setSizePolicy(sizePolicy11)
 
-        self.BTNLAUNCHAdded = QPushButton(self.scrollAreaWidgetContents_3)
-        self.BTNLAUNCHAdded.setObjectName(u"BTNLAUNCHAdded")
-        self.BTNLAUNCHAdded.setIcon(icon3)
+            self.LAYOUTLAUNCHAdded.addWidget(self.LABELLAUNCHAdded)
 
-        self.LAYOUTLAUNCHAdded.addWidget(self.BTNLAUNCHAdded)
+            self.BTNLAUNCHAdded = QPushButton(self.scrollAreaWidgetContents_3)
+            self.BTNLAUNCHAdded.setObjectName(u"BTNLAUNCHAdded")
+            self.BTNLAUNCHAdded.setIcon(icon3)
 
+            self.LAYOUTLAUNCHAdded.addWidget(self.BTNLAUNCHAdded)
 
-        self.verticalLayout_13.addLayout(self.LAYOUTLAUNCHAdded)
+            self.verticalLayout_13.addLayout(self.LAYOUTLAUNCHAdded)
 
         self.verticalSpacer_3 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -574,7 +682,7 @@ class Ui_Widget(object):
 
         self.verticalLayout_4.addLayout(self.horizontalLayout_26)
 
-        self.TABPKGNew.addTab(self.tab, "")
+        self.TABPKGNew.addTab(self.TAB_my_pkg, "")
 
         self.verticalLayout_17.addWidget(self.TABPKGNew)
 
@@ -614,6 +722,7 @@ class Ui_Widget(object):
         self.EDITPKGNew.setPlaceholderText(QCoreApplication.translate("Widget", u"my_pkg", None))
         self.BTNPKGNew.setText(QCoreApplication.translate("Widget", u"Paquete", None))
         self.LABELPKGInfo.setText(QCoreApplication.translate("Widget", u"Sobre el nuevo paquete", None))
+        self.BTNDel_my_pkg.setText("")
         self.LABELPKGDescription.setText(QCoreApplication.translate("Widget", u"Descripci\u00f3n:", None))
         self.EDITPKGDescription.setPlaceholderText(QCoreApplication.translate("Widget", u"Proposito del nuevo paquete de ROS2.", None))
         self.LABELPKGLicense.setText(QCoreApplication.translate("Widget", u"Licencia:", None))
@@ -654,7 +763,7 @@ class Ui_Widget(object):
         self.CBLAUNCHNew.setItemText(2, QCoreApplication.translate("Widget", u".xml", None))
 
         self.LABELLAUNCHAdded.setText(QCoreApplication.translate("Widget", u"my_launcher.python.py", None))
-        self.TABPKGNew.setTabText(self.TABPKGNew.indexOf(self.tab), QCoreApplication.translate("Widget", u"my_pkg", None))
+        self.TABPKGNew.setTabText(self.TABPKGNew.indexOf(self.TAB_my_pkg), QCoreApplication.translate("Widget", u"my_pkg", None))
         self.BTNMake.setText(QCoreApplication.translate("Widget", u"Crear", None))
         self.BTNCancell.setText(QCoreApplication.translate("Widget", u"Cancelar", None))
     # retranslateUi

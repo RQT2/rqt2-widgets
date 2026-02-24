@@ -46,7 +46,7 @@ class FrameButtonWidget(QFrame):
 
         self.icon = ScaledIconLabel(max_size=self.max_size, parent=self)
         # Use nonlinear scaling: base 96px but accelerated growth (power 2.0)
-        self.icon = ScaledIconLabel(max_size=self.max_size, parent=self, base_size=128, scale_power=2.0)
+        self.icon = ScaledIconLabel(max_size=self.max_size, parent=self, base_size=128, scale_power=1.8)
         self.title = QLabel(title, parent=self)
         self.info = QLabel(info, parent=self)
 

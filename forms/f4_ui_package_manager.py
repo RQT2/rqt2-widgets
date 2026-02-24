@@ -3,7 +3,7 @@
 ################################################################################
 ## Form generated from reading UI file 'form.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.2
+## Created by: Qt User Interface Compiler version 6.9.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,21 +15,65 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QHBoxLayout, QHeaderView,
+from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QScrollArea,
-    QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem,
-    QVBoxLayout, QWidget)
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+import importlib.util
+import os
+from PySide6 import QtWidgets as _qtw
+
+# load icon helper from utils/icon_loader if available
+load_qicon = None
+load_qpixmap = None
+placeholder = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'icons', 'placeholder.svg'))
+try:
+    _il_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'icon_loader.py'))
+    spec = importlib.util.spec_from_file_location('icon_loader', _il_path)
+    _il = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(_il)
+    load_qicon = _il.load_qicon
+    load_qpixmap = _il.load_qpixmap
+    _resolve_icon = _il._resolve_icon
+except Exception:
+    def load_qicon(rel_path, icon_dirs=None, fallback=None):
+        ico = QIcon()
+        try:
+            ico.addFile(rel_path)
+        except Exception:
+            pass
+        return ico
+
+    def load_qpixmap(rel_path, icon_dirs=None, fallback=None):
+        pix = QPixmap()
+        try:
+            pix.load(rel_path)
+        except Exception:
+            pass
+        return pix
+
+    def _resolve_icon(icon_dirs, rel_path):
+        if not icon_dirs:
+            return rel_path
+        if isinstance(icon_dirs, (list, tuple)):
+            for base in icon_dirs:
+                cand = os.path.normpath(os.path.join(base, rel_path))
+                if os.path.exists(cand):
+                    return cand
+            return rel_path
+        else:
+            return os.path.normpath(os.path.join(icon_dirs, rel_path))
 
 class Ui_Widget(object):
-    def setupUi(self, Widget):
+    def setupUi(self, Widget, icon_dirs=None):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
         Widget.resize(575, 350)
         Widget.setMinimumSize(QSize(575, 350))
         icon = QIcon()
-        icon.addFile(u"icons/logo.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon_path = _resolve_icon(icon_dirs, os.path.join('logo.svg'))
+        icon.addFile(icon_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         Widget.setWindowIcon(icon)
-        self.verticalLayout = QVBoxLayout(Widget)
+        self.verticalLayout = _qtw.QVBoxLayout(Widget)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -68,30 +112,67 @@ class Ui_Widget(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 555, 267))
-        self.verticalLayout_3 = QVBoxLayout(self.scrollAreaWidgetContents)
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 555, 262))
+        self.verticalLayout_3 = _qtw.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.TABLE = QTableWidget(self.scrollAreaWidgetContents)
-        if (self.TABLE.columnCount() < 3):
-            self.TABLE.setColumnCount(3)
-        font = QFont()
-        font.setHintingPreference(QFont.PreferFullHinting)
-        __qtablewidgetitem = QTableWidgetItem()
-        __qtablewidgetitem.setTextAlignment(Qt.AlignLeading|Qt.AlignVCenter);
-        __qtablewidgetitem.setFont(font);
-        self.TABLE.setHorizontalHeaderItem(0, __qtablewidgetitem)
-        __qtablewidgetitem1 = QTableWidgetItem()
-        self.TABLE.setHorizontalHeaderItem(1, __qtablewidgetitem1)
-        __qtablewidgetitem2 = QTableWidgetItem()
-        self.TABLE.setHorizontalHeaderItem(2, __qtablewidgetitem2)
-        self.TABLE.setObjectName(u"TABLE")
-        sizePolicy1 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-        sizePolicy1.setHorizontalStretch(0)
-        sizePolicy1.setVerticalStretch(0)
-        sizePolicy1.setHeightForWidth(self.TABLE.sizePolicy().hasHeightForWidth())
-        self.TABLE.setSizePolicy(sizePolicy1)
+        self.gridLayout = QGridLayout()
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.BUTTONInstall = QPushButton(self.scrollAreaWidgetContents)
+        self.BUTTONInstall.setObjectName(u"BUTTONInstall")
 
-        self.verticalLayout_3.addWidget(self.TABLE)
+        self.gridLayout.addWidget(self.BUTTONInstall, 1, 2, 1, 1)
+
+        self.label_4 = QLabel(self.scrollAreaWidgetContents)
+        self.label_4.setObjectName(u"label_4")
+
+        self.gridLayout.addWidget(self.label_4, 1, 1, 1, 1)
+
+        self.label_2 = QLabel(self.scrollAreaWidgetContents)
+        self.label_2.setObjectName(u"label_2")
+
+        self.gridLayout.addWidget(self.label_2, 0, 1, 1, 1)
+
+        self.label = QLabel(self.scrollAreaWidgetContents)
+        self.label.setObjectName(u"label")
+        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy)
+
+        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
+
+        self.label_3 = QLabel(self.scrollAreaWidgetContents)
+        self.label_3.setObjectName(u"label_3")
+
+        self.gridLayout.addWidget(self.label_3, 0, 2, 1, 1)
+
+        self.label_5 = QLabel(self.scrollAreaWidgetContents)
+        self.label_5.setObjectName(u"label_5")
+
+        self.gridLayout.addWidget(self.label_5, 1, 0, 1, 1)
+
+
+        self.verticalLayout_3.addLayout(self.gridLayout)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        # try to create a dynamic package item list using utils.package_item.PackageItemWidget
+        try:
+            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'package_item.py'))
+            spec = importlib.util.spec_from_file_location('package_item', utils_path)
+            pkg_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(pkg_mod)
+            PackageItemWidget = pkg_mod.PackageItemWidget
+
+            # example: add a sample item (real code should populate dynamically)
+            self.PACKAGE_LIST_CONTAINER = QWidget(self.scrollAreaWidgetContents)
+            from PySide6.QtWidgets import QVBoxLayout as _QVBoxLayout
+            self._pkg_list_layout = _QVBoxLayout(self.PACKAGE_LIST_CONTAINER)
+            sample = PackageItemWidget(name="ros2-jazzy", link="ver", parent=self.PACKAGE_LIST_CONTAINER)
+            self._pkg_list_layout.addWidget(sample)
+            self.verticalLayout_3.addWidget(self.PACKAGE_LIST_CONTAINER)
+        except Exception:
+            # keep original spacer and static grid if utils missing
+            self.verticalLayout_3.addItem(self.verticalSpacer)
+
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
@@ -133,12 +214,12 @@ class Ui_Widget(object):
         self.EDITSearch.setText(QCoreApplication.translate("Widget", u"*", None))
         self.CBOPT1Search.setText(QCoreApplication.translate("Widget", u"Herramientas", None))
         self.CBOPT2Search.setText(QCoreApplication.translate("Widget", u"Dependencias", None))
-        ___qtablewidgetitem = self.TABLE.horizontalHeaderItem(0)
-        ___qtablewidgetitem.setText(QCoreApplication.translate("Widget", u"Nombre", None));
-        ___qtablewidgetitem1 = self.TABLE.horizontalHeaderItem(1)
-        ___qtablewidgetitem1.setText(QCoreApplication.translate("Widget", u"Depende de", None));
-        ___qtablewidgetitem2 = self.TABLE.horizontalHeaderItem(2)
-        ___qtablewidgetitem2.setText(QCoreApplication.translate("Widget", u"Instal", None));
+        self.BUTTONInstall.setText(QCoreApplication.translate("Widget", u"Instalar", None))
+        self.label_4.setText(QCoreApplication.translate("Widget", u"ver", None))
+        self.label_2.setText(QCoreApplication.translate("Widget", u"Depende de", None))
+        self.label.setText(QCoreApplication.translate("Widget", u"Nombre", None))
+        self.label_3.setText(QCoreApplication.translate("Widget", u"TextLabel", None))
+        self.label_5.setText(QCoreApplication.translate("Widget", u"ros2-jazzy", None))
         self.BTNApply.setText(QCoreApplication.translate("Widget", u"Aplicar", None))
         self.BTNAccept.setText(QCoreApplication.translate("Widget", u"Aceptar", None))
         self.BTNCancell.setText(QCoreApplication.translate("Widget", u"Cancelar", None))

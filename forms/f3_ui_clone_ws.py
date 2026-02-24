@@ -18,9 +18,52 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
     QVBoxLayout, QWidget)
+import importlib.util
+import os
+
+# load icon helper from utils/icon_loader if available
+load_qicon = None
+load_qpixmap = None
+placeholder = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'icons', 'placeholder.svg'))
+try:
+    _il_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'icon_loader.py'))
+    spec = importlib.util.spec_from_file_location('icon_loader', _il_path)
+    _il = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(_il)
+    load_qicon = _il.load_qicon
+    load_qpixmap = _il.load_qpixmap
+    _resolve_icon = _il._resolve_icon
+except Exception:
+    def load_qicon(rel_path, icon_dirs=None, fallback=None):
+        ico = QIcon()
+        try:
+            ico.addFile(rel_path)
+        except Exception:
+            pass
+        return ico
+
+    def load_qpixmap(rel_path, icon_dirs=None, fallback=None):
+        pix = QPixmap()
+        try:
+            pix.load(rel_path)
+        except Exception:
+            pass
+        return pix
+
+    def _resolve_icon(icon_dirs, rel_path):
+        if not icon_dirs:
+            return rel_path
+        if isinstance(icon_dirs, (list, tuple)):
+            for base in icon_dirs:
+                cand = os.path.normpath(os.path.join(base, rel_path))
+                if os.path.exists(cand):
+                    return cand
+            return rel_path
+        else:
+            return os.path.normpath(os.path.join(icon_dirs, rel_path))
 
 class Ui_Widget(object):
-    def setupUi(self, Widget):
+    def setupUi(self, Widget, icon_dirs=None):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
         Widget.resize(455, 200)
@@ -60,7 +103,8 @@ class Ui_Widget(object):
         self.BTNUri = QPushButton(self.scrollAreaWidgetContents)
         self.BTNUri.setObjectName(u"BTNUri")
         icon = QIcon()
-        icon.addFile(u"icons/browser.svg", QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        icon_path = _resolve_icon(icon_dirs, _resolve_icon(icon_dirs, os.path.join('emulator', 'default.svg')))
+        icon.addFile(icon_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNUri.setIcon(icon)
 
         self.horizontalLayout_4.addWidget(self.BTNUri)
