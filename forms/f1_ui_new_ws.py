@@ -21,6 +21,28 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QDoubleSpinBox, QFrame,
     QSpacerItem, QTabWidget, QVBoxLayout, QWidget)
 import importlib.util
 import os
+import re
+
+# try to import sanitize helper from utils/name_utils
+sanitize_item_name = None
+try:
+    _nu_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'name_utils.py'))
+    spec_nu = importlib.util.spec_from_file_location('name_utils', _nu_path)
+    _nu = importlib.util.module_from_spec(spec_nu)
+    spec_nu.loader.exec_module(_nu)
+    sanitize_item_name = _nu.sanitize_item_name
+except Exception:
+    def sanitize_item_name(raw: str, ext: str = "", default_base: str = "new_item") -> str:
+        # fallback: minimal inline behavior (keeps compatibility)
+        s = (raw or '').strip().replace(' ', '_')
+        s = re.sub(r'[^A-Za-z0-9._-]', '', s).lower().rstrip('.')
+        if not s:
+            s = default_base
+        if not s[0].isalpha():
+            s = 'a' + s
+        if ext and not s.endswith(ext):
+            return s + ext
+        return s
 
 # load icon helper from utils/icon_loader if available
 load_qicon = None
@@ -686,6 +708,10 @@ class Ui_Widget(object):
 
         self.verticalLayout_17.addWidget(self.TABPKGNew)
 
+        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_17.addItem(self.verticalSpacer_4)
+
         self.horizontalLayout_19 = QHBoxLayout()
         self.horizontalLayout_19.setObjectName(u"horizontalLayout_19")
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
@@ -710,6 +736,36 @@ class Ui_Widget(object):
 
         self.TABPKGNew.setCurrentIndex(0)
 
+        # store icon dirs for runtime handlers
+        self._icon_dirs = icon_dirs or []
+
+        try:
+            self.EDITWSNew.textChanged.connect(self._on_ws_name_changed)
+        except Exception:
+            pass
+
+        # connect add buttons for nodes and launches to runtime handlers
+        try:
+            self.BTNNODENew.clicked.connect(self._on_add_node)
+        except Exception:
+            pass
+        try:
+            self.BTNLAUNCHNew.clicked.connect(self._on_add_launch)
+        except Exception:
+            pass
+        try:
+            self.BTNPKGNew.clicked.connect(self._on_add_pkg)
+        except Exception:
+            pass
+        try:
+            self.EDITPKGNew.returnPressed.connect(self._on_add_pkg)
+        except Exception:
+            pass
+        # connect delete-package button to remove its tab from the tabwidget
+        try:
+            self.BTNDel_my_pkg.clicked.connect(self._on_delete_my_pkg_tab)
+        except Exception:
+            pass
 
         QMetaObject.connectSlotsByName(Widget)
     # setupUi
@@ -767,4 +823,380 @@ class Ui_Widget(object):
         self.BTNMake.setText(QCoreApplication.translate("Widget", u"Crear", None))
         self.BTNCancell.setText(QCoreApplication.translate("Widget", u"Cancelar", None))
     # retranslateUi
+
+    def _remove_item(self, widget, parent_layout):
+        try:
+            parent_layout.removeWidget(widget)
+        except Exception:
+            pass
+        try:
+            widget.setParent(None)
+            widget.deleteLater()
+        except Exception:
+            pass
+
+    def _on_add_node(self):
+        # determine active tab and corresponding controls/layouts
+        target_tab = None
+        try:
+            target_tab = self.TABPKGNew.currentWidget()
+        except Exception:
+            target_tab = None
+
+        # prefer controls inside the active tab, fallback to the ones on self
+        edit_widget = None
+        combo_widget = None
+        node_container = None
+        target_layout = None
+        try:
+            if target_tab is not None:
+                edit_widget = target_tab.findChild(QLineEdit, 'EDITNODENew')
+                combo_widget = target_tab.findChild(QComboBox, 'CBNODENew')
+                node_container = target_tab.findChild(QWidget, 'scrollAreaWidgetContents_2')
+                if node_container is not None:
+                    target_layout = node_container.layout()
+        except Exception:
+            edit_widget = None
+            combo_widget = None
+
+        if edit_widget is None:
+            edit_widget = getattr(self, 'EDITNODENew', None)
+        if combo_widget is None:
+            combo_widget = getattr(self, 'CBNODENew', None)
+        if target_layout is None:
+            target_layout = getattr(self, 'verticalLayout_16', None)
+            node_container = getattr(self, 'scrollAreaWidgetContents_2', None)
+
+        raw = (edit_widget.text() if edit_widget is not None else '') or ''
+        ext = (combo_widget.currentText() if combo_widget is not None else '') or ''
+
+        name = sanitize_item_name(raw, ext=ext, default_base='new_node')
+
+        # ensure uniqueness in the node list
+        exists = False
+        if target_layout is not None:
+            for i in range(target_layout.count()):
+                it = target_layout.itemAt(i)
+                w = it.widget()
+                if w is not None:
+                    if hasattr(w, 'label'):
+                        if (w.label.text() or '') == name:
+                            exists = True
+                            break
+                    if isinstance(w, QLabel):
+                        if (w.text() or '') == name:
+                            exists = True
+                            break
+                else:
+                    l = it.layout()
+                    if l is not None and l.count() > 0:
+                        first = l.itemAt(0).widget()
+                        if first is not None and isinstance(first, QLabel):
+                            if (first.text() or '') == name:
+                                exists = True
+                                break
+        if exists:
+            return
+
+        # attempt to create a RemovableItemWidget
+        try:
+            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
+            spec = importlib.util.spec_from_file_location('removable_item', utils_path)
+            rem_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(rem_mod)
+            RemovableItemWidget = rem_mod.RemovableItemWidget
+
+            widget = RemovableItemWidget(text=name, parent=(node_container or self.scrollAreaWidgetContents_2),
+                                         icon_path=_resolve_icon(self._icon_dirs, os.path.join('close', 'default.svg')))
+            # insert before the spacer (last item)
+            if target_layout is not None:
+                target_layout.insertWidget(max(0, target_layout.count()-1), widget)
+                try:
+                    widget.removed.connect(lambda w=widget: self._remove_item(w, target_layout))
+                except Exception:
+                    pass
+        except Exception:
+            # fallback: create simple layout with label + button
+            layout = QHBoxLayout()
+            parent_widget = node_container or self.scrollAreaWidgetContents_2
+            lbl = QLabel(parent_widget)
+            lbl.setText(name)
+            sp = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+            lbl.setSizePolicy(sp)
+            btn = QPushButton(parent_widget)
+            btn.setText('x')
+            layout.addWidget(lbl)
+            layout.addWidget(btn)
+            # insert before spacer
+            if target_layout is not None:
+                target_layout.insertLayout(max(0, target_layout.count()-1), layout)
+                btn.clicked.connect(lambda _, l=layout: (l.setParent(None)))
+
+    def _on_add_launch(self):
+        # determine active tab and corresponding controls/layouts
+        target_tab = None
+        try:
+            target_tab = self.TABPKGNew.currentWidget()
+        except Exception:
+            target_tab = None
+
+        edit_widget = None
+        combo_widget = None
+        launch_container = None
+        target_layout = None
+        try:
+            if target_tab is not None:
+                edit_widget = target_tab.findChild(QLineEdit, 'EDITLAUNCHNew')
+                combo_widget = target_tab.findChild(QComboBox, 'CBLAUNCHNew')
+                launch_container = target_tab.findChild(QWidget, 'scrollAreaWidgetContents_3')
+                if launch_container is not None:
+                    target_layout = launch_container.layout()
+        except Exception:
+            edit_widget = None
+            combo_widget = None
+
+        if edit_widget is None:
+            edit_widget = getattr(self, 'EDITLAUNCHNew', None)
+        if combo_widget is None:
+            combo_widget = getattr(self, 'CBLAUNCHNew', None)
+        if target_layout is None:
+            target_layout = getattr(self, 'verticalLayout_13', None)
+            launch_container = getattr(self, 'scrollAreaWidgetContents_3', None)
+
+        raw = (edit_widget.text() if edit_widget is not None else '') or ''
+        ext = (combo_widget.currentText() if combo_widget is not None else '') or ''
+
+        name = sanitize_item_name(raw, ext=ext, default_base='new_launch')
+
+        # ensure uniqueness in launch list
+        exists = False
+        if target_layout is not None:
+            for i in range(target_layout.count()):
+                it = target_layout.itemAt(i)
+                w = it.widget()
+                if w is not None:
+                    if hasattr(w, 'label'):
+                        if (w.label.text() or '') == name:
+                            exists = True
+                            break
+                    if isinstance(w, QLabel):
+                        if (w.text() or '') == name:
+                            exists = True
+                            break
+                else:
+                    l = it.layout()
+                    if l is not None and l.count() > 0:
+                        first = l.itemAt(0).widget()
+                        if first is not None and isinstance(first, QLabel):
+                            if (first.text() or '') == name:
+                                exists = True
+                                break
+        if exists:
+            return
+
+        try:
+            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
+            spec = importlib.util.spec_from_file_location('removable_item', utils_path)
+            rem_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(rem_mod)
+            RemovableItemWidget = rem_mod.RemovableItemWidget
+
+            widget = RemovableItemWidget(text=name, parent=(launch_container or self.scrollAreaWidgetContents_3),
+                                         icon_path=_resolve_icon(self._icon_dirs, os.path.join('close', 'default.svg')))
+            if target_layout is not None:
+                target_layout.insertWidget(max(0, target_layout.count()-1), widget)
+                try:
+                    widget.removed.connect(lambda w=widget: self._remove_item(w, target_layout))
+                except Exception:
+                    pass
+        except Exception:
+            layout = QHBoxLayout()
+            parent_widget = launch_container or self.scrollAreaWidgetContents_3
+            lbl = QLabel(parent_widget)
+            lbl.setText(name)
+            sp = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+            lbl.setSizePolicy(sp)
+            btn = QPushButton(parent_widget)
+            btn.setText('x')
+            layout.addWidget(lbl)
+            layout.addWidget(btn)
+            if target_layout is not None:
+                target_layout.insertLayout(max(0, target_layout.count()-1), layout)
+                btn.clicked.connect(lambda _, l=layout: (l.setParent(None)))
+
+    def _on_delete_my_pkg_tab(self):
+        try:
+            # find the index of the tab that contains TAB_my_pkg
+            idx = -1
+            try:
+                idx = self.TABPKGNew.indexOf(self.TAB_my_pkg)
+            except Exception:
+                idx = -1
+            if idx is not None and idx >= 0:
+                try:
+                    self.TABPKGNew.removeTab(idx)
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+    def _on_add_pkg(self):
+        raw = (self.EDITPKGNew.text() or '')
+        # packages typically don't have an extension here
+        name = sanitize_item_name(raw, ext='', default_base='my_pkg')
+
+        # ensure uniqueness among tab texts
+        for i in range(self.TABPKGNew.count()):
+            try:
+                if (self.TABPKGNew.tabText(i) or '') == name:
+                    return
+            except Exception:
+                continue
+
+        try:
+            # instantiate a temporary Ui_Widget to reuse the TAB_my_pkg template
+            temp_root = QWidget()
+            temp_ui = type(self)()
+            temp_ui.setupUi(temp_root, icon_dirs=self._icon_dirs)
+
+            # grab the template tab widget
+            template_tab = None
+            try:
+                template_tab = temp_ui.TAB_my_pkg
+            except Exception:
+                template_tab = None
+
+            if template_tab is None:
+                return
+
+            # find the original delete button on the template (before renaming)
+            try:
+                orig_del_btn = template_tab.findChild(QPushButton, 'BTNDel_my_pkg')
+            except Exception:
+                orig_del_btn = None
+
+            # rename objectNames that include '_my_pkg' to use the new package id
+            pkg_id = name
+            try:
+                for obj in template_tab.findChildren(QObject):
+                    try:
+                        on = obj.objectName()
+                        if on and '_my_pkg' in on:
+                            obj.setObjectName(on.replace('_my_pkg', '_' + pkg_id))
+                    except Exception:
+                        continue
+            except Exception:
+                pass
+
+            # detach from the temporary root and add as a new tab
+            try:
+                template_tab.setParent(None)
+                idx = self.TABPKGNew.addTab(template_tab, pkg_id)
+            except Exception:
+                return
+
+            # set package install dir placeholder based on current workspace name
+            try:
+                ws_raw = (getattr(self, 'EDITWSNew', None).text() or '')
+            except Exception:
+                ws_raw = ''
+            try:
+                ws_sanit = sanitize_item_name(ws_raw, ext='', default_base='ros2_ws')
+                ws_placeholder = ws_sanit.rstrip('/') + '/src/'
+            except Exception:
+                ws_placeholder = 'ros2_ws/src/'
+            try:
+                for le in template_tab.findChildren(QLineEdit):
+                    on = le.objectName() or ''
+                    if on.startswith('EDITPKGDir'):
+                        try:
+                            le.setPlaceholderText(ws_placeholder)
+                        except Exception:
+                            pass
+            except Exception:
+                pass
+
+            # connect the delete button (use the original reference if found)
+            try:
+                btn = orig_del_btn if orig_del_btn is not None else None
+                if btn is None:
+                    # fallback: try to find renamed delete button
+                    btn = template_tab.findChild(QPushButton, 'BTNDel_' + pkg_id)
+                if btn is not None:
+                    def _remove_this_tab():
+                        try:
+                            ix = self.TABPKGNew.indexOf(template_tab)
+                            if ix is not None and ix >= 0:
+                                self.TABPKGNew.removeTab(ix)
+                        except Exception:
+                            pass
+                    try:
+                        btn.clicked.connect(_remove_this_tab)
+                    except Exception:
+                        pass
+            except Exception:
+                pass
+            # connect cloned add-node and add-launch buttons to operate on this tab
+            try:
+                node_btn = template_tab.findChild(QPushButton, 'BTNNODENew')
+                if node_btn is not None:
+                    node_btn.clicked.connect(lambda _, tb=template_tab: (self.TABPKGNew.setCurrentWidget(tb), self._on_add_node()))
+                # also connect returnPressed of EDITNODENew inside the tab if present
+                edit_node = template_tab.findChild(QLineEdit, 'EDITNODENew')
+                if edit_node is not None:
+                    edit_node.returnPressed.connect(lambda tb=template_tab: (self.TABPKGNew.setCurrentWidget(tb), self._on_add_node()))
+            except Exception:
+                pass
+            try:
+                launch_btn = template_tab.findChild(QPushButton, 'BTNLAUNCHNew')
+                if launch_btn is not None:
+                    launch_btn.clicked.connect(lambda _, tb=template_tab: (self.TABPKGNew.setCurrentWidget(tb), self._on_add_launch()))
+                edit_launch = template_tab.findChild(QLineEdit, 'EDITLAUNCHNew')
+                if edit_launch is not None:
+                    edit_launch.returnPressed.connect(lambda tb=template_tab: (self.TABPKGNew.setCurrentWidget(tb), self._on_add_launch()))
+            except Exception:
+                pass
+        except Exception:
+            pass
+
+    def _on_ws_name_changed(self, text: str):
+        try:
+            ws = (text or '')
+            sanitized = sanitize_item_name(ws, ext='', default_base='ros2_ws')
+            new_placeholder = sanitized.rstrip('/') + '/src/'
+        except Exception:
+            new_placeholder = 'ros2_ws/src/'
+
+        # update the main EDITPKGDir if present
+        try:
+            if hasattr(self, 'EDITPKGDir') and self.EDITPKGDir is not None:
+                try:
+                    self.EDITPKGDir.setPlaceholderText(new_placeholder)
+                except Exception:
+                    pass
+        except Exception:
+            pass
+
+        # update EDITPKGDir inside every tab (including cloned ones)
+        try:
+            for i in range(self.TABPKGNew.count()):
+                tab = self.TABPKGNew.widget(i)
+                if tab is None:
+                    continue
+                try:
+                    # find all QLineEdit children and update those named like EDITPKGDir
+                    for le in tab.findChildren(QLineEdit):
+                        on = le.objectName() or ''
+                        if on.startswith('EDITPKGDir'):
+                            try:
+                                le.setPlaceholderText(new_placeholder)
+                            except Exception:
+                                pass
+                except Exception:
+                    continue
+        except Exception:
+            pass
+
+    def _on_maint_changed(self, _=None):
+        return
 

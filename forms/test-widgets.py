@@ -38,11 +38,11 @@ if __name__ == "__main__":
     ]
 
     mapping = [
-        (Ui_Form, "UI Form"),
-        (Ui_Main, "Main"),
-        (Ui_New, "New Workspace"),
-        (Ui_Clone, "Clone Workspace"),
-        (Ui_Pkg, "Package Manager")
+        (Ui_Form, "RQT2 IDE / *"),
+        (Ui_Main, "RQT2 IDE"),
+        (Ui_New, "RQT2 IDE / Nuevo espacio de trabajo"),
+        (Ui_Clone, "RQT2 IDE / Clonar espacio de trabajo"),
+        (Ui_Pkg, "RQT2 IDE / Gestor de instalación")
     ]
 
     for ui_cls, title in mapping:
