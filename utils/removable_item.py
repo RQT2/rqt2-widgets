@@ -1,27 +1,51 @@
-from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QHBoxLayout, QSizePolicy
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QIcon
 import os
 
 
 class RemovableItemWidget(QWidget):
-    """Widget simple que muestra un texto y un botón para eliminar/ocultar.
+    """Small widget that shows a label and a removable button.
 
-    Exposición mínima: `.label` y `.button` para compatibilidad.
+    Backwards-compatible: exposes `.label` and `.button` attributes.
+
+    This refactor makes parameters optional and ensures the label uses
+    `QSizePolicy.MinimumExpanding` by default so it behaves like the fallback
+    QLabel used in generated forms when `RemovableItemWidget` can't be loaded.
     """
 
     removed = Signal()
 
-    def __init__(self, text: str = "", parent=None, icon_path: str = None):
+    def __init__(self, text: str = "", parent=None, icon_path: str = None, *, expand_label: bool = True):
         super().__init__(parent)
-        self.label = QLabel(text, self)
+
+        # robustly handle missing/None text
+        self.label = QLabel(text or "", self)
+
+        # ensure label expands like the fallback QLabel used across forms
+        if expand_label:
+            sp = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+            sp.setHorizontalStretch(0)
+            sp.setVerticalStretch(0)
+            sp.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+            self.label.setSizePolicy(sp)
+
         self.button = QPushButton(self)
+
+        # try to set an icon if provided and valid, otherwise use a fallback text
+        icon_set = False
         if icon_path:
-            icon = QIcon(icon_path)
-            self.button.setIcon(icon)
-        else:
-            # default close icon next to repo icons
-            default = os.path.join(os.path.dirname(__file__), '..', 'forms', 'icons', 'close.svg')
+            try:
+                icon = QIcon(icon_path)
+                if not icon.isNull():
+                    self.button.setIcon(icon)
+                    icon_set = True
+            except Exception:
+                icon_set = False
+
+        if not icon_set:
+            # do not attempt to load a bundled default icon path that may not exist;
+            # show a small 'x' as a safe fallback
             self.button.setText('x')
 
         self.button.clicked.connect(self._on_remove)
@@ -33,3 +57,18 @@ class RemovableItemWidget(QWidget):
     def _on_remove(self):
         self.setParent(None)
         self.removed.emit()
+
+    # convenience helpers that downstream code may use
+    def set_text(self, text: str):
+        self.label.setText(text or "")
+
+    def set_icon(self, icon_path: str):
+        try:
+            icon = QIcon(icon_path)
+            if not icon.isNull():
+                self.button.setIcon(icon)
+                self.button.setText('')
+                return True
+        except Exception:
+            pass
+        return False
