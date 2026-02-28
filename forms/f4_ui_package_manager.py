@@ -17,7 +17,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QGridLayout, QHBoxLayout,
     QLabel, QLineEdit, QPushButton, QScrollArea,
-    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget, QTableView, QHeaderView)
+from PySide6.QtCore import QAbstractTableModel, QModelIndex, QTimer
+import urllib.request
+import io
 import importlib.util
 import os
 from PySide6 import QtWidgets as _qtw
@@ -62,6 +65,114 @@ except Exception:
             return rel_path
         else:
             return os.path.normpath(os.path.join(icon_dirs, rel_path))
+
+
+# Lightweight table model for packages used by the package manager UI.
+class PackageTableModel(QAbstractTableModel):
+    HEADERS = ["Nombre", "Link", "Estado", "Acción"]
+
+    def __init__(self, packages=None, parent=None):
+        super().__init__(parent)
+        # each item: {'name':str, 'link':str, 'installed':bool, 'pending':bool}
+        self._data = packages or []
+
+    def rowCount(self, parent=QModelIndex()):
+        return len(self._data)
+
+    def columnCount(self, parent=QModelIndex()):
+        return len(self.HEADERS)
+
+    def headerData(self, section, orientation, role=Qt.ItemDataRole.DisplayRole):
+        if role != Qt.ItemDataRole.DisplayRole:
+            return None
+        if orientation == Qt.Orientation.Horizontal:
+            return self.HEADERS[section]
+        return section + 1
+
+    def data(self, index, role=Qt.ItemDataRole.DisplayRole):
+        if not index.isValid():
+            return None
+        row = index.row()
+        col = index.column()
+        pkg = self._data[row]
+        if role == Qt.ItemDataRole.DisplayRole:
+            if col == 0:
+                return pkg.get("name")
+            if col == 1:
+                return pkg.get("link")
+            if col == 2:
+                # three-state: Installed / Uninstalled / Pending
+                if pkg.get("pending"):
+                    return "Pendiente"
+                return "Instalado" if pkg.get("installed") else "Desinstalado"
+            if col == 3:
+                # action shows request/ cancel
+                return "Solicitar" if not pkg.get("pending") else "Cancelar"
+        return None
+
+    def flags(self, index):
+        if not index.isValid():
+            return Qt.ItemFlag.NoItemFlags
+        return Qt.ItemFlag.ItemIsEnabled | Qt.ItemFlag.ItemIsSelectable
+
+    def set_packages(self, packages):
+        self.beginResetModel()
+        self._data = []
+        for p in packages:
+            item = {
+                'name': p.get('name', ''),
+                'link': p.get('link', ''),
+                'installed': bool(p.get('installed', False)),
+                'pending': False,
+            }
+            self._data.append(item)
+        self.endResetModel()
+
+    def request_toggle_pending(self, row: int):
+        if row < 0 or row >= len(self._data):
+            return
+        self._data[row]['pending'] = not self._data[row].get('pending', False)
+        left = self.index(row, 2)
+        right = self.index(row, 3)
+        self.dataChanged.emit(left, right, [Qt.ItemDataRole.DisplayRole])
+        # return number of pending items after the toggle
+        return sum(1 for it in self._data if it.get('pending'))
+
+    def apply_requests(self):
+        # Apply requested operations: flip installed for pending items
+        ops = []
+        for i, item in enumerate(self._data):
+            if item.get('pending'):
+                # simulate install/uninstall by toggling installed
+                prev = item.get('installed', False)
+                item['installed'] = not prev
+                item['pending'] = False
+                ops.append((item['name'], 'install' if item['installed'] else 'uninstall'))
+                left = self.index(i, 2)
+                right = self.index(i, 3)
+                self.dataChanged.emit(left, right, [Qt.ItemDataRole.DisplayRole])
+        return ops
+
+    def load_from_url(self, url: str, max_items: int = 500):
+        try:
+            with urllib.request.urlopen(url, timeout=15) as resp:
+                raw = resp.read().decode('utf-8', errors='ignore')
+        except Exception:
+            return
+        # parse Debian Packages format: split by blank line
+        records = [r for r in raw.split('\n\n') if r.strip()]
+        pkgs = []
+        for rec in records:
+            name = None
+            for line in rec.splitlines():
+                if line.startswith('Package:'):
+                    name = line.split(':', 1)[1].strip()
+                    break
+            if name:
+                pkgs.append({'name': name, 'link': 'ver', 'installed': False})
+            if len(pkgs) >= max_items:
+                break
+        self.set_packages(pkgs)
 
 class Ui_Widget(object):
     def setupUi(self, Widget, icon_dirs=None):
@@ -115,48 +226,33 @@ class Ui_Widget(object):
         self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 555, 262))
         self.verticalLayout_3 = _qtw.QVBoxLayout(self.scrollAreaWidgetContents)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.gridLayout = QGridLayout()
-        self.gridLayout.setObjectName(u"gridLayout")
+        # Replace grid-based package list with a model/view table for scalability
+        self.pkg_view = QTableView(self.scrollAreaWidgetContents)
+        self.pkg_view.setObjectName(u"pkgView")
+        # model parent must be a QObject (use the actual Widget, not the Ui object)
+        self.pkg_model = PackageTableModel(parent=Widget)
+        self.pkg_view.setModel(self.pkg_model)
+        # configure header: name column should expand, others fit contents
+        header = self.pkg_view.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
+        self.verticalLayout_3.addWidget(self.pkg_view)
 
-        # try to use helper from utils.package_item to add rows into the grid
-        try:
-            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'package_item.py'))
-            spec = importlib.util.spec_from_file_location('package_item', utils_path)
-            pkg_mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(pkg_mod)
-            add_package_row = pkg_mod.add_package_row
+        # clicking the Action column toggles the 'pending' state (does not apply changes)
+        def _on_pkg_clicked(index):
+            try:
+                if index.column() == 3:
+                    self.pkg_model.request_toggle_pending(index.row())
+                    try:
+                        self._update_apply_button()
+                    except Exception:
+                        pass
+            except Exception:
+                pass
 
-            # add an example row (grid row 1, logical index 0)
-            #for i in range(20):
-            #    add_package_row(self.gridLayout, i+1, i, f"ros2-jazzy{i}", "ver", parent=self.scrollAreaWidgetContents)
-        except Exception:
-            # fallback: create simple widgets matching the original naming
-            self.BUTTONInstall0 = QPushButton(self.scrollAreaWidgetContents)
-            self.BUTTONInstall0.setObjectName(u"BUTTONInstall0")
-            self.gridLayout.addWidget(self.BUTTONInstall0, 1, 3, 1, 1)
-
-            self.PKGLINKS0 = QLabel(self.scrollAreaWidgetContents)
-            self.PKGLINKS0.setObjectName(u"PKGLINKS0")
-            self.PKGLINKS0.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-            self.gridLayout.addWidget(self.PKGLINKS0, 1, 1, 1, 1)
-
-            self.PKGName0 = QLabel(self.scrollAreaWidgetContents)
-            self.PKGName0.setObjectName(u"PKGName0")
-            sizePolicy3 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
-            sizePolicy3.setHorizontalStretch(0)
-            sizePolicy3.setVerticalStretch(0)
-            sizePolicy3.setHeightForWidth(self.PKGName0.sizePolicy().hasHeightForWidth())
-            self.PKGName0.setSizePolicy(sizePolicy3)
-            self.gridLayout.addWidget(self.PKGName0, 1, 0, 1, 1)
-
-
-        self.verticalLayout_3.addLayout(self.gridLayout)
-
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        # ensure we keep the spacer below the grid; package rows should be
-        # inserted into the gridLayout (columns: 0=name, 1=links, 3=action)
-        self.verticalLayout_3.addItem(self.verticalSpacer)
+        self.pkg_view.clicked.connect(_on_pkg_clicked)
 
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
@@ -173,6 +269,11 @@ class Ui_Widget(object):
         self.BTNApply.setObjectName(u"BTNApply")
 
         self.horizontalLayout_2.addWidget(self.BTNApply)
+        try:
+            # connect apply to model apply_requests
+            self.BTNApply.clicked.connect(lambda: getattr(self, '_on_apply_packages', lambda: None)())
+        except Exception:
+            pass
 
         self.BTNAccept = QPushButton(Widget)
         self.BTNAccept.setObjectName(u"BTNAccept")
@@ -206,4 +307,31 @@ class Ui_Widget(object):
         self.BTNAccept.setText(QCoreApplication.translate("Widget", u"Aceptar", None))
         self.BTNCancell.setText(QCoreApplication.translate("Widget", u"Cancelar", None))
     # retranslateUi
+
+    def _on_apply_packages(self):
+        try:
+            ops = self.pkg_model.apply_requests()
+            # simple feedback: print operations; real implementation should
+            # perform installation/uninstallation via backend
+            if ops:
+                for name, op in ops:
+                    print(f"Requested {op} for {name}")
+            try:
+                self._update_apply_button()
+            except Exception:
+                pass
+        except Exception:
+            pass
+
+    def _update_apply_button(self):
+        try:
+            pending = 0
+            if hasattr(self, 'pkg_model'):
+                pending = sum(1 for it in self.pkg_model._data if it.get('pending'))
+            if pending:
+                self.BTNApply.setText(f"Aplicar ({pending} pendientes)")
+            else:
+                self.BTNApply.setText(QCoreApplication.translate("Widget", u"Aplicar", None))
+        except Exception:
+            pass
 
