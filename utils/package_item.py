@@ -38,3 +38,38 @@ class PackageItemWidget(QWidget):
 
     def setButtonText(self, text: str):
         self.btn_action.setText(text)
+
+
+def add_package_row(grid_layout, grid_row: int, idx: int, name: str, link: str, button_text: str = "Instalar", parent=None):
+    """Helper to insert a package row into a QGridLayout.
+
+    Places widgets in columns: 0=name, 1=links, 3=action button.
+    Returns the created (label_name, label_link, button) tuple so caller
+    can connect signals.
+    """
+    from PySide6.QtWidgets import QLabel, QPushButton, QSizePolicy
+    from PySide6.QtCore import Qt
+    from PySide6.QtGui import QCursor
+
+    lbl_name = QLabel(parent)
+    lbl_name.setObjectName(f"PKGName{idx}")
+    sizePolicy = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+    sizePolicy.setHeightForWidth(lbl_name.sizePolicy().hasHeightForWidth())
+    lbl_name.setSizePolicy(sizePolicy)
+    lbl_name.setText(name)
+
+    lbl_link = QLabel(parent)
+    lbl_link.setObjectName(f"PKGLINKS{idx}")
+    lbl_link.setText(link)
+    lbl_link.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+
+    btn = QPushButton(parent)
+    btn.setObjectName(f"BUTTONInstall{idx}")
+    btn.setText(button_text)
+
+    # add to grid: (grid_row, 0) name, (grid_row,1) links, (grid_row,3) action
+    grid_layout.addWidget(lbl_name, grid_row, 0, 1, 1)
+    grid_layout.addWidget(lbl_link, grid_row, 1, 1, 1)
+    grid_layout.addWidget(btn, grid_row, 3, 1, 1)
+
+    return lbl_name, lbl_link, btn

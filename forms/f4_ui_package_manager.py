@@ -117,61 +117,46 @@ class Ui_Widget(object):
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        self.BUTTONInstall = QPushButton(self.scrollAreaWidgetContents)
-        self.BUTTONInstall.setObjectName(u"BUTTONInstall")
 
-        self.gridLayout.addWidget(self.BUTTONInstall, 1, 2, 1, 1)
+        # try to use helper from utils.package_item to add rows into the grid
+        try:
+            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'package_item.py'))
+            spec = importlib.util.spec_from_file_location('package_item', utils_path)
+            pkg_mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(pkg_mod)
+            add_package_row = pkg_mod.add_package_row
 
-        self.label_4 = QLabel(self.scrollAreaWidgetContents)
-        self.label_4.setObjectName(u"label_4")
+            # add an example row (grid row 1, logical index 0)
+            #for i in range(20):
+            #    add_package_row(self.gridLayout, i+1, i, f"ros2-jazzy{i}", "ver", parent=self.scrollAreaWidgetContents)
+        except Exception:
+            # fallback: create simple widgets matching the original naming
+            self.BUTTONInstall0 = QPushButton(self.scrollAreaWidgetContents)
+            self.BUTTONInstall0.setObjectName(u"BUTTONInstall0")
+            self.gridLayout.addWidget(self.BUTTONInstall0, 1, 3, 1, 1)
 
-        self.gridLayout.addWidget(self.label_4, 1, 1, 1, 1)
+            self.PKGLINKS0 = QLabel(self.scrollAreaWidgetContents)
+            self.PKGLINKS0.setObjectName(u"PKGLINKS0")
+            self.PKGLINKS0.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+            self.gridLayout.addWidget(self.PKGLINKS0, 1, 1, 1, 1)
 
-        self.label_2 = QLabel(self.scrollAreaWidgetContents)
-        self.label_2.setObjectName(u"label_2")
-
-        self.gridLayout.addWidget(self.label_2, 0, 1, 1, 1)
-
-        self.label = QLabel(self.scrollAreaWidgetContents)
-        self.label.setObjectName(u"label")
-        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy)
-
-        self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
-
-        self.label_3 = QLabel(self.scrollAreaWidgetContents)
-        self.label_3.setObjectName(u"label_3")
-
-        self.gridLayout.addWidget(self.label_3, 0, 2, 1, 1)
-
-        self.label_5 = QLabel(self.scrollAreaWidgetContents)
-        self.label_5.setObjectName(u"label_5")
-
-        self.gridLayout.addWidget(self.label_5, 1, 0, 1, 1)
+            self.PKGName0 = QLabel(self.scrollAreaWidgetContents)
+            self.PKGName0.setObjectName(u"PKGName0")
+            sizePolicy3 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
+            sizePolicy3.setHorizontalStretch(0)
+            sizePolicy3.setVerticalStretch(0)
+            sizePolicy3.setHeightForWidth(self.PKGName0.sizePolicy().hasHeightForWidth())
+            self.PKGName0.setSizePolicy(sizePolicy3)
+            self.gridLayout.addWidget(self.PKGName0, 1, 0, 1, 1)
 
 
         self.verticalLayout_3.addLayout(self.gridLayout)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        # try to create a dynamic package item list using utils.package_item.PackageItemWidget
-        try:
-            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'package_item.py'))
-            spec = importlib.util.spec_from_file_location('package_item', utils_path)
-            pkg_mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(pkg_mod)
-            PackageItemWidget = pkg_mod.PackageItemWidget
-
-            # example: add a sample item (real code should populate dynamically)
-            self.PACKAGE_LIST_CONTAINER = QWidget(self.scrollAreaWidgetContents)
-            from PySide6.QtWidgets import QVBoxLayout as _QVBoxLayout
-            self._pkg_list_layout = _QVBoxLayout(self.PACKAGE_LIST_CONTAINER)
-            sample = PackageItemWidget(name="ros2-jazzy", link="ver", parent=self.PACKAGE_LIST_CONTAINER)
-            self._pkg_list_layout.addWidget(sample)
-            self.verticalLayout_3.addWidget(self.PACKAGE_LIST_CONTAINER)
-        except Exception:
-            # keep original spacer and static grid if utils missing
-            self.verticalLayout_3.addItem(self.verticalSpacer)
+        # ensure we keep the spacer below the grid; package rows should be
+        # inserted into the gridLayout (columns: 0=name, 1=links, 3=action)
+        self.verticalLayout_3.addItem(self.verticalSpacer)
 
 
         self.scrollArea.setWidget(self.scrollAreaWidgetContents)
@@ -214,12 +199,9 @@ class Ui_Widget(object):
         self.EDITSearch.setText(QCoreApplication.translate("Widget", u"*", None))
         self.CBOPT1Search.setText(QCoreApplication.translate("Widget", u"Herramientas", None))
         self.CBOPT2Search.setText(QCoreApplication.translate("Widget", u"Dependencias", None))
-        self.BUTTONInstall.setText(QCoreApplication.translate("Widget", u"Instalar", None))
-        self.label_4.setText(QCoreApplication.translate("Widget", u"ver", None))
-        self.label_2.setText(QCoreApplication.translate("Widget", u"Depende de", None))
-        self.label.setText(QCoreApplication.translate("Widget", u"Nombre", None))
-        self.label_3.setText(QCoreApplication.translate("Widget", u"TextLabel", None))
-        self.label_5.setText(QCoreApplication.translate("Widget", u"ros2-jazzy", None))
+        #self.BUTTONInstall0.setText(QCoreApplication.translate("Widget", u"Instalar", None))
+        # links text for first package row
+        #self.PKGName0.setText(QCoreApplication.translate("Widget", u"ros2-jazzy", None))
         self.BTNApply.setText(QCoreApplication.translate("Widget", u"Aplicar", None))
         self.BTNAccept.setText(QCoreApplication.translate("Widget", u"Aceptar", None))
         self.BTNCancell.setText(QCoreApplication.translate("Widget", u"Cancelar", None))
