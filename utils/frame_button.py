@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QPixmap, QCursor
-from PySide6.QtWidgets import QLabel, QFrame, QVBoxLayout
+from PySide6.QtWidgets import QLabel, QFrame, QVBoxLayout, QApplication
 
 try:
     from .scaled_icon_label import ScaledIconLabel
@@ -37,10 +37,18 @@ class FrameButtonWidget(QFrame):
     clicked = Signal()
 
     def __init__(self, icon_path: Optional[str] = None, title: str = "", info: str = "",
-                 parent=None, icon_dirs: Optional[List[str]] = None, max_size: int = 512):
+                 parent=None, icon_dirs: Optional[List[str]] = None, max_size: int = 512,
+                 apply_theme_from_palette: bool = True):
         super().__init__(parent)
         self.setCursor(QCursor(Qt.PointingHandCursor))
+        # objectName kept for compatibility; use properties for styling (role/variant/state)
         self.setObjectName("FrameButtonWidget")
+        # role acts like a CSS class; variant can be 'primary', 'secondary', etc.
+        self.setProperty('role', 'frame-button')
+        # default visual variant
+        self.setProperty('variant', 'default')
+        # state: 'normal' | 'pressed' — QSS can match [state="pressed"]
+        self.setProperty('state', 'normal')
         self.icon_dirs = icon_dirs or []
         self.max_size = max_size
 
@@ -48,7 +56,9 @@ class FrameButtonWidget(QFrame):
         # Use nonlinear scaling: base 96px but accelerated growth (power 2.0)
         self.icon = ScaledIconLabel(max_size=self.max_size, parent=self, base_size=128, scale_power=1.8)
         self.title = QLabel(title, parent=self)
+        self.title.setProperty('role', 'title')
         self.info = QLabel(info, parent=self)
+        self.info.setProperty('role', 'info')
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(8, 8, 8, 8)
@@ -62,9 +72,94 @@ class FrameButtonWidget(QFrame):
             if pix and not pix.isNull():
                 self.icon.setPixmap(pix)
 
+                # Apply a lightweight QSS based on the current QApplication palette so
+                # the FrameButton matches the platform button appearance by default.
+                # This uses `palette(...)` in QSS so it follows theme changes where
+                # supported. If an application-level QSS later defines rules for
+                # role="frame-button" those rules can override visuals.
+                if apply_theme_from_palette:
+                        try:
+                                self._apply_palette_style()
+                        except Exception:
+                                pass
+
+        def _apply_palette_style(self):
+                # Build a widget-scoped stylesheet using palette() references so the
+                # frame adopts the current theme's button colors.
+                variant = self.property('variant') or 'default'
+                style = f"""
+QFrame[role="frame-button"][variant="{variant}"] {{
+    background: palette(button);
+    color: palette(button-text);
+    border: 1px solid palette(mid);
+    border-radius: 6px;
+    padding: 6px;
+}}
+QFrame[role="frame-button"][variant="{variant}"]:hover {{
+    background: palette(alternate-base);
+}}
+QFrame[role="frame-button"][variant="{variant}"][state="pressed"] {{
+    background: palette(mid);
+}}
+QFrame[role="frame-button"][variant="{variant}"] QLabel[role="title"] {{
+    color: palette(button-text);
+    font-weight: 600;
+}}
+"""
+                # Apply only to this widget and its children
+                self.setStyleSheet(style)
+
+    def enterEvent(self, event):
+        super().enterEvent(event)
+        try:
+            self.setProperty('hover', True)
+            self.style().unpolish(self)
+            self.style().polish(self)
+            self.update()
+        except Exception:
+            pass
+
+    def leaveEvent(self, event):
+        super().leaveEvent(event)
+        try:
+            self.setProperty('hover', False)
+            self.style().unpolish(self)
+            self.style().polish(self)
+            self.update()
+        except Exception:
+            pass
+
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
+        try:
+            self.setProperty('state', 'pressed')
+            self.style().unpolish(self)
+            self.style().polish(self)
+            self.update()
+        except Exception:
+            pass
+
+    def mouseReleaseEvent(self, event):
+        super().mouseReleaseEvent(event)
+        try:
+            # restore state before emitting clicked to allow QSS to reflect press
+            self.setProperty('state', 'normal')
+            self.style().unpolish(self)
+            self.style().polish(self)
+            self.update()
+        except Exception:
+            pass
         self.clicked.emit()
+
+    def setVariant(self, variant: str):
+        """Set visual variant used by QSS selectors (e.g. 'primary')."""
+        try:
+            self.setProperty('variant', variant)
+            self.style().unpolish(self)
+            self.style().polish(self)
+            self.update()
+        except Exception:
+            pass
 
     def _load_pix(self, rel_path: str) -> QPixmap:
         # Prefer explicit resolution so we can surface useful diagnostics
