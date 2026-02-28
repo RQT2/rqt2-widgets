@@ -583,11 +583,13 @@ class Ui_Widget(object):
 
             self.LAYOUTNODEAdded = QHBoxLayout()
             self.LAYOUTNODEAdded.setObjectName(u"LAYOUTNODEAdded")
+            """
             sample = RemovableItemWidget(text="my_node.py", parent=self.scrollAreaWidgetContents_2, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg')))
             self.LABELNODEAdded = sample.label
             self.BTNNODEAdded = sample.button
             self.LAYOUTNODEAdded.addWidget(sample)
             self.verticalLayout_16.addLayout(self.LAYOUTNODEAdded)
+            """
         except Exception:
             self.LAYOUTNODEAdded = QHBoxLayout()
             self.LAYOUTNODEAdded.setObjectName(u"LAYOUTNODEAdded")
@@ -667,10 +669,12 @@ class Ui_Widget(object):
 
             self.LAYOUTLAUNCHAdded = QHBoxLayout()
             self.LAYOUTLAUNCHAdded.setObjectName(u"LAYOUTLAUNCHAdded")
+            """
             sample = RemovableItemWidget(text="my_launcher.python.py", parent=self.scrollAreaWidgetContents_3, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg')))
             self.LABELLAUNCHAdded = sample.label
             self.BTNLAUNCHAdded = sample.button
             self.LAYOUTLAUNCHAdded.addWidget(sample)
+            """
             self.verticalLayout_13.addLayout(self.LAYOUTLAUNCHAdded)
         except Exception:
             self.LAYOUTLAUNCHAdded = QHBoxLayout()
@@ -704,7 +708,7 @@ class Ui_Widget(object):
 
         self.verticalLayout_4.addLayout(self.horizontalLayout_26)
 
-        self.TABPKGNew.addTab(self.TAB_my_pkg, "")
+        #self.TABPKGNew.addTab(self.TAB_my_pkg, "")
 
         self.verticalLayout_17.addWidget(self.TABPKGNew)
 
@@ -812,13 +816,13 @@ class Ui_Widget(object):
         self.CBNODENew.setItemText(0, QCoreApplication.translate("Widget", u".py", None))
         self.CBNODENew.setItemText(1, QCoreApplication.translate("Widget", u".cpp", None))
 
-        self.LABELNODEAdded.setText(QCoreApplication.translate("Widget", u"my_node.py", None))
+        #self.LABELNODEAdded.setText(QCoreApplication.translate("Widget", u"my_node.py", None))
         self.GROUPLaunch.setTitle(QCoreApplication.translate("Widget", u"Lanzadores", None))
         self.CBLAUNCHNew.setItemText(0, QCoreApplication.translate("Widget", u".launch.py", None))
         self.CBLAUNCHNew.setItemText(1, QCoreApplication.translate("Widget", u".yaml", None))
         self.CBLAUNCHNew.setItemText(2, QCoreApplication.translate("Widget", u".xml", None))
 
-        self.LABELLAUNCHAdded.setText(QCoreApplication.translate("Widget", u"my_launcher.python.py", None))
+        #self.LABELLAUNCHAdded.setText(QCoreApplication.translate("Widget", u"my_launcher.python.py", None))
         self.TABPKGNew.setTabText(self.TABPKGNew.indexOf(self.TAB_my_pkg), QCoreApplication.translate("Widget", u"my_pkg", None))
         self.BTNMake.setText(QCoreApplication.translate("Widget", u"Crear", None))
         self.BTNCancell.setText(QCoreApplication.translate("Widget", u"Cancelar", None))
