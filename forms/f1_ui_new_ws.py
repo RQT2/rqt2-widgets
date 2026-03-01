@@ -158,6 +158,7 @@ class Ui_Widget(object):
         icon1_path = _resolve_icon(icon_dirs, os.path.join('new', 'default.svg'))
         icon1.addFile(icon1_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNPKGNew.setIcon(icon1)
+        self.BTNPKGNew.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_8.addWidget(self.BTNPKGNew)
 
@@ -192,6 +193,7 @@ class Ui_Widget(object):
         icon_del_pkg_path = _resolve_icon(icon_dirs, os.path.join('close', 'default.svg'))
         icon_del_pkg.addFile(icon_del_pkg_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNDel_my_pkg.setIcon(icon_del_pkg)
+        self.BTNDel_my_pkg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout.addWidget(self.BTNDel_my_pkg)
 
@@ -425,6 +427,7 @@ class Ui_Widget(object):
         self.BTNPKGDir.setMaximumSize(QSize(16777215, 16777215))
         icon2 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.FolderOpen))
         self.BTNPKGDir.setIcon(icon2)
+        self.BTNPKGDir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_12.addWidget(self.BTNPKGDir)
 
@@ -454,6 +457,7 @@ class Ui_Widget(object):
         self.BTNPKGApts = QPushButton(self.GROUPConf)
         self.BTNPKGApts.setObjectName(u"BTNPKGApts")
         self.BTNPKGApts.setIcon(icon1)
+        self.BTNPKGApts.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_14.addWidget(self.BTNPKGApts)
 
@@ -476,11 +480,13 @@ class Ui_Widget(object):
 
             self.LAYOUTPKGAdded = QHBoxLayout()
             self.LAYOUTPKGAdded.setObjectName(u"LAYOUTPKGAdded")
+            """
             sample = RemovableItemWidget(text="rlcpp", parent=self.FRAMEPKGAdded, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg')))
             self.LABELPKGAdded = sample.label
             self.BTNPKGAdded = sample.button
             self.LAYOUTPKGAdded.addWidget(sample)
             self.verticalLayout_14.addLayout(self.LAYOUTPKGAdded)
+            """
         except Exception:
             self.LAYOUTPKGAdded = QHBoxLayout()
             self.LAYOUTPKGAdded.setObjectName(u"LAYOUTPKGAdded")
@@ -500,6 +506,7 @@ class Ui_Widget(object):
             icon3_path = _resolve_icon(icon_dirs, os.path.join('close', 'default.svg'))
             icon3.addFile(icon3_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
             self.BTNPKGAdded.setIcon(icon3)
+            self.BTNPKGAdded.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
             self.LAYOUTPKGAdded.addWidget(self.BTNPKGAdded)
 
@@ -557,6 +564,7 @@ class Ui_Widget(object):
         self.BTNNODENew = QPushButton(self.GROUPNode)
         self.BTNNODENew.setObjectName(u"BTNNODENew")
         self.BTNNODENew.setIcon(icon1)
+        self.BTNNODENew.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_16.addWidget(self.BTNNODENew)
 
@@ -603,6 +611,7 @@ class Ui_Widget(object):
             self.BTNNODEAdded = QPushButton(self.scrollAreaWidgetContents_2)
             self.BTNNODEAdded.setObjectName(u"BTNNODEAdded")
             self.BTNNODEAdded.setIcon(icon3)
+            self.BTNNODEAdded.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
             self.LAYOUTNODEAdded.addWidget(self.BTNNODEAdded)
 
@@ -643,6 +652,7 @@ class Ui_Widget(object):
         self.BTNLAUNCHNew = QPushButton(self.GROUPLaunch)
         self.BTNLAUNCHNew.setObjectName(u"BTNLAUNCHNew")
         self.BTNLAUNCHNew.setIcon(icon1)
+        self.BTNLAUNCHNew.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_17.addWidget(self.BTNLAUNCHNew)
 
@@ -689,6 +699,7 @@ class Ui_Widget(object):
             self.BTNLAUNCHAdded = QPushButton(self.scrollAreaWidgetContents_3)
             self.BTNLAUNCHAdded.setObjectName(u"BTNLAUNCHAdded")
             self.BTNLAUNCHAdded.setIcon(icon3)
+            self.BTNLAUNCHAdded.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
             self.LAYOUTLAUNCHAdded.addWidget(self.BTNLAUNCHAdded)
 
@@ -724,11 +735,13 @@ class Ui_Widget(object):
 
         self.BTNMake = QPushButton(Widget)
         self.BTNMake.setObjectName(u"BTNMake")
+        self.BTNMake.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_19.addWidget(self.BTNMake)
 
         self.BTNCancell = QPushButton(Widget)
         self.BTNCancell.setObjectName(u"BTNCancell")
+        self.BTNCancell.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_19.addWidget(self.BTNCancell)
 
@@ -811,7 +824,7 @@ class Ui_Widget(object):
         self.LABELPKGDir.setText(QCoreApplication.translate("Widget", u"Ubicaci\u00f3n de instalaci\u00f3n", None))
         self.EDITPKGDir.setPlaceholderText(QCoreApplication.translate("Widget", u"ros2_ws/src/", None))
         self.LABELPKGApts.setText(QCoreApplication.translate("Widget", u"Dependencias:", None))
-        self.LABELPKGAdded.setText(QCoreApplication.translate("Widget", u"rlcpp", None))
+        #self.LABELPKGAdded.setText(QCoreApplication.translate("Widget", u"rlcpp", None))
         self.GROUPNode.setTitle(QCoreApplication.translate("Widget", u"Nodos", None))
         self.CBNODENew.setItemText(0, QCoreApplication.translate("Widget", u".py", None))
         self.CBNODENew.setItemText(1, QCoreApplication.translate("Widget", u".cpp", None))
@@ -929,6 +942,7 @@ class Ui_Widget(object):
             lbl.setSizePolicy(sp)
             btn = QPushButton(parent_widget)
             btn.setText('x')
+            btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             layout.addWidget(lbl)
             layout.addWidget(btn)
             # insert before spacer
@@ -1022,6 +1036,7 @@ class Ui_Widget(object):
             lbl.setSizePolicy(sp)
             btn = QPushButton(parent_widget)
             btn.setText('x')
+            btn.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
             layout.addWidget(lbl)
             layout.addWidget(btn)
             if target_layout is not None:

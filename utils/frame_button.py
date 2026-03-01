@@ -4,7 +4,7 @@ import os
 from typing import List, Optional
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtGui import QPixmap, QCursor
+from PySide6.QtGui import QPixmap, QCursor, QIcon
 from PySide6.QtWidgets import QLabel, QFrame, QVBoxLayout, QApplication
 
 try:
@@ -77,17 +77,17 @@ class FrameButtonWidget(QFrame):
                 # This uses `palette(...)` in QSS so it follows theme changes where
                 # supported. If an application-level QSS later defines rules for
                 # role="frame-button" those rules can override visuals.
-                if apply_theme_from_palette:
-                        try:
-                                self._apply_palette_style()
-                        except Exception:
-                                pass
+        if apply_theme_from_palette:
+            try:
+                self._apply_palette_style()
+            except Exception:
+                pass
 
-        def _apply_palette_style(self):
-                # Build a widget-scoped stylesheet using palette() references so the
-                # frame adopts the current theme's button colors.
-                variant = self.property('variant') or 'default'
-                style = f"""
+    def _apply_palette_style(self):
+        # Build a widget-scoped stylesheet using palette() references so the
+        # frame adopts the current theme's button colors.
+        variant = self.property('variant') or 'default'
+        style = f"""
 QFrame[role="frame-button"][variant="{variant}"] {{
     background: palette(button);
     color: palette(button-text);
@@ -106,8 +106,8 @@ QFrame[role="frame-button"][variant="{variant}"] QLabel[role="title"] {{
     font-weight: 600;
 }}
 """
-                # Apply only to this widget and its children
-                self.setStyleSheet(style)
+        # Apply only to this widget and its children
+        self.setStyleSheet(style)
 
     def enterEvent(self, event):
         super().enterEvent(event)
@@ -165,13 +165,42 @@ QFrame[role="frame-button"][variant="{variant}"] QLabel[role="title"] {{
         # Prefer explicit resolution so we can surface useful diagnostics
         base = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
 
-        # 1) If icon_loader exposes resolve_icon_path, try that first
+        # 1) Prefer icon_loader._resolve_icon (it may return recolored temp SVG)
+        try:
+            if hasattr(icon_loader, 'recolor_svg_to_temp'):
+                temp_svg = icon_loader.recolor_svg_to_temp(rel_path)
+            else:
+                temp_svg = rel_path
+            if temp_svg and os.path.exists(temp_svg):
+                pm = QPixmap(temp_svg)
+                if pm and not pm.isNull():
+                    return pm
+                try:
+                    ico = QIcon(temp_svg)
+                    pm2 = ico.pixmap(min(self.max_size or 256, 512), min(self.max_size or 256, 512))
+                    if pm2 and not pm2.isNull():
+                        return pm2
+                except Exception:
+                    pass
+        except Exception as e:
+            print(f"[FrameButtonWidget] _resolve_icon error: {e}")
+
+        # fallback: try resolve_icon_path
         resolved = None
         try:
             if hasattr(icon_loader, 'resolve_icon_path'):
                 resolved = icon_loader.resolve_icon_path(self.icon_dirs, rel_path)
                 if resolved and os.path.exists(resolved):
-                    return QPixmap(resolved)
+                    pm = QPixmap(resolved)
+                    if pm and not pm.isNull():
+                        return pm
+                    try:
+                        ico = QIcon(resolved)
+                        pm2 = ico.pixmap(min(self.max_size or 256, 512), min(self.max_size or 256, 512))
+                        if pm2 and not pm2.isNull():
+                            return pm2
+                    except Exception:
+                        pass
         except Exception as e:
             print(f"[FrameButtonWidget] resolve_icon_path error: {e}")
 

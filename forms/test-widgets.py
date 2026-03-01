@@ -26,11 +26,20 @@ class DemoWindow(QWidget):
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    # load default QSS from rqt2-components/styles if available
+    import os
+    base = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
+    qss_path = os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'styles/themes', 'default.qss'))
+    try:
+        if os.path.exists(qss_path):
+            with open(qss_path, 'r') as _f:
+                app.setStyleSheet(_f.read())
+    except Exception:
+        pass
 
     windows = []
     # define icon directories to try (order matters)
-    import os
-    base = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
+    # icon directories (order matters)
     icons_dirs = [
         os.path.join(base, '..', 'rqt2-widgets', 'icons'),
         os.path.join(base, '..', 'rqt2-components', 'assets/branding'),
@@ -40,9 +49,9 @@ if __name__ == "__main__":
     mapping = [
         (Ui_Form, "RQT2 IDE / *"),
         (Ui_Main, "RQT2 IDE"),
-        (Ui_New, "RQT2 IDE / Nuevo espacio de trabajo"),
-        (Ui_Clone, "RQT2 IDE / Clonar espacio de trabajo"),
-        (Ui_Pkg, "RQT2 IDE / Gestor de instalación")
+        #(Ui_New, "RQT2 IDE / Nuevo espacio de trabajo"),
+        #(Ui_Clone, "RQT2 IDE / Clonar espacio de trabajo"),
+        #(Ui_Pkg, "RQT2 IDE / Gestor de instalación")
     ]
 
     for ui_cls, title in mapping:
