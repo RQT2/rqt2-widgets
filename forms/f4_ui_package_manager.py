@@ -267,6 +267,7 @@ class Ui_Widget(object):
 
         self.BTNApply = QPushButton(Widget)
         self.BTNApply.setObjectName(u"BTNApply")
+        self.BTNApply.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_2.addWidget(self.BTNApply)
         try:
@@ -277,11 +278,13 @@ class Ui_Widget(object):
 
         self.BTNAccept = QPushButton(Widget)
         self.BTNAccept.setObjectName(u"BTNAccept")
+        self.BTNAccept.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_2.addWidget(self.BTNAccept)
 
         self.BTNCancell = QPushButton(Widget)
         self.BTNCancell.setObjectName(u"BTNCancell")
+        self.BTNCancell.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_2.addWidget(self.BTNCancell)
 

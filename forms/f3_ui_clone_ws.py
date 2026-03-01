@@ -106,6 +106,7 @@ class Ui_Widget(object):
         icon_path = _resolve_icon(icon_dirs, _resolve_icon(icon_dirs, os.path.join('emulator', 'default.svg')))
         icon.addFile(icon_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNUri.setIcon(icon)
+        self.BTNUri.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) 
 
         self.horizontalLayout_4.addWidget(self.BTNUri)
 
@@ -124,12 +125,14 @@ class Ui_Widget(object):
         sizePolicy1.setHeightForWidth(self.EDITDir.sizePolicy().hasHeightForWidth())
         self.EDITDir.setSizePolicy(sizePolicy1)
 
+
         self.horizontalLayout_5.addWidget(self.EDITDir)
 
         self.BTNDir = QPushButton(self.scrollAreaWidgetContents)
         self.BTNDir.setObjectName(u"BTNDir")
         icon1 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.FolderOpen))
         self.BTNDir.setIcon(icon1)
+        self.BTNDir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) 
 
         self.horizontalLayout_5.addWidget(self.BTNDir)
 
@@ -169,11 +172,13 @@ class Ui_Widget(object):
 
         self.BTNClone = QPushButton(Widget)
         self.BTNClone.setObjectName(u"BTNClone")
+        self.BTNClone.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) 
 
         self.horizontalLayout.addWidget(self.BTNClone)
 
         self.BTNCancell = QPushButton(Widget)
         self.BTNCancell.setObjectName(u"BTNCancell")
+        self.BTNCancell.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) 
 
         self.horizontalLayout.addWidget(self.BTNCancell)
 
