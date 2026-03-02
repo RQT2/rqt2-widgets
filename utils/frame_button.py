@@ -72,43 +72,6 @@ class FrameButtonWidget(QFrame):
             if pix and not pix.isNull():
                 self.icon.setPixmap(pix)
 
-                # Apply a lightweight QSS based on the current QApplication palette so
-                # the FrameButton matches the platform button appearance by default.
-                # This uses `palette(...)` in QSS so it follows theme changes where
-                # supported. If an application-level QSS later defines rules for
-                # role="frame-button" those rules can override visuals.
-        if apply_theme_from_palette:
-            try:
-                self._apply_palette_style()
-            except Exception:
-                pass
-
-    def _apply_palette_style(self):
-        # Build a widget-scoped stylesheet using palette() references so the
-        # frame adopts the current theme's button colors.
-        variant = self.property('variant') or 'default'
-        style = f"""
-QFrame[role="frame-button"][variant="{variant}"] {{
-    background: palette(button);
-    color: palette(button-text);
-    border: 1px solid palette(mid);
-    border-radius: 6px;
-    padding: 6px;
-}}
-QFrame[role="frame-button"][variant="{variant}"]:hover {{
-    background: palette(alternate-base);
-}}
-QFrame[role="frame-button"][variant="{variant}"][state="pressed"] {{
-    background: palette(mid);
-}}
-QFrame[role="frame-button"][variant="{variant}"] QLabel[role="title"] {{
-    color: palette(button-text);
-    font-weight: 600;
-}}
-"""
-        # Apply only to this widget and its children
-        self.setStyleSheet(style)
-
     def enterEvent(self, event):
         super().enterEvent(event)
         try:

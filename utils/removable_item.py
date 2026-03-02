@@ -18,6 +18,9 @@ class RemovableItemWidget(QWidget):
 
     def __init__(self, text: str = "", parent=None, icon_path: str = None, *, expand_label: bool = True):
         super().__init__(parent)
+        self.setProperty('role', 'removable-item')
+        self.setProperty('variant', 'default')
+        self.setProperty('state', 'normal')
 
         # robustly handle missing/None text
         self.label = QLabel(text or "", self)
@@ -31,6 +34,9 @@ class RemovableItemWidget(QWidget):
             self.label.setSizePolicy(sp)
 
         self.button = QPushButton(self)
+        self.button.setProperty('role', 'close')
+        self.button.setProperty('variant', 'default')
+        self.button.setProperty('state', 'normal')
 
         # try to set an icon if provided and valid, otherwise use a fallback text
         icon_set = False
