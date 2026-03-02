@@ -89,13 +89,13 @@ class Ui_Widget(object):
     def setupUi(self, Widget, icon_dirs=None):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
-        Widget.resize(780, 870)
+        Widget.resize(810, 870)
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Widget.sizePolicy().hasHeightForWidth())
         Widget.setSizePolicy(sizePolicy)
-        Widget.setMinimumSize(QSize(780, 870))
+        Widget.setMinimumSize(QSize(810, 870))
         icon = QIcon()
         icon_path = _resolve_icon(icon_dirs, os.path.join('logo.svg'))
         icon.addFile(icon_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
@@ -173,6 +173,9 @@ class Ui_Widget(object):
         sizePolicy4.setHeightForWidth(self.TABPKGNew.sizePolicy().hasHeightForWidth())
         self.TABPKGNew.setSizePolicy(sizePolicy4)
         self.TAB_my_pkg = QWidget()
+        self.TAB_my_pkg.setProperty('role', 'in-tab')
+        self.TAB_my_pkg.setProperty('variant', 'default')
+        self.TAB_my_pkg.setProperty('state', 'normal')
         self.TAB_my_pkg.setObjectName(u"TAB_my_pkg")
         self.verticalLayout_4 = QVBoxLayout(self.TAB_my_pkg)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
@@ -194,6 +197,9 @@ class Ui_Widget(object):
         icon_del_pkg.addFile(icon_del_pkg_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNDel_my_pkg.setIcon(icon_del_pkg)
         self.BTNDel_my_pkg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.BTNDel_my_pkg.setProperty('role', 'button')
+        self.BTNDel_my_pkg.setProperty('variant', 'default')
+        self.BTNDel_my_pkg.setProperty('state', 'normal')
 
         self.horizontalLayout.addWidget(self.BTNDel_my_pkg)
 
@@ -250,6 +256,14 @@ class Ui_Widget(object):
         self.CBPKGLicense.addItem("")
         self.CBPKGLicense.addItem("")
         self.CBPKGLicense.setObjectName(u"CBPKGLicense")
+        self.CBPKGLicense.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        arrow_down_icon = load_qicon(os.path.join('arrows', 'down.svg'), icon_dirs)
+        arrow_up_icon = load_qicon(os.path.join('arrows', 'up.svg'), icon_dirs)
+        if not arrow_down_icon.isNull() and not arrow_up_icon.isNull():
+            self.CBPKGLicense.setStyleSheet(f"""
+                QComboBox::down-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'down.svg'))}); }}
+                QComboBox::up-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'up.svg'))}); }}
+            """)
         sizePolicy7 = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Fixed)
         sizePolicy7.setHorizontalStretch(0)
         sizePolicy7.setVerticalStretch(0)
@@ -287,6 +301,12 @@ class Ui_Widget(object):
         self.CBPKGAment.addItem("")
         self.CBPKGAment.addItem("")
         self.CBPKGAment.setObjectName(u"CBPKGAment")
+        self.CBPKGAment.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        if not arrow_down_icon.isNull() and not arrow_up_icon.isNull():
+            self.CBPKGAment.setStyleSheet(f"""
+                QComboBox::down-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'down.svg'))}); }}
+                QComboBox::up-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'up.svg'))}); }}
+            """)
         sizePolicy2.setHeightForWidth(self.CBPKGAment.sizePolicy().hasHeightForWidth())
         self.CBPKGAment.setSizePolicy(sizePolicy2)
 
@@ -333,6 +353,12 @@ class Ui_Widget(object):
         self.SPINXMLVer.setDecimals(1)
         self.SPINXMLVer.setSingleStep(0.100000000000000)
         self.SPINXMLVer.setValue(1.000000000000000)
+        if not arrow_down_icon.isNull() and not arrow_up_icon.isNull():
+            self.SPINXMLVer.setStyleSheet(f"""
+                QDoubleSpinBox::down-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'down.svg'))}); }}
+                QDoubleSpinBox::up-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'up.svg'))}); }}
+            """)
+        self.SPINXMLVer.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
         self.horizontalLayout_6.addWidget(self.SPINXMLVer)
 
@@ -425,7 +451,9 @@ class Ui_Widget(object):
         sizePolicy10.setHeightForWidth(self.BTNPKGDir.sizePolicy().hasHeightForWidth())
         self.BTNPKGDir.setSizePolicy(sizePolicy10)
         self.BTNPKGDir.setMaximumSize(QSize(16777215, 16777215))
-        icon2 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.FolderOpen))
+        icon2 = QIcon()
+        icon2_path = _resolve_icon(icon_dirs, os.path.join('folder', 'default.svg'))
+        icon2.addFile(icon2_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNPKGDir.setIcon(icon2)
         self.BTNPKGDir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
 
@@ -471,6 +499,7 @@ class Ui_Widget(object):
         self.verticalLayout_14 = QVBoxLayout(self.FRAMEPKGAdded)
         self.verticalLayout_14.setObjectName(u"verticalLayout_14")
         # try to use RemovableItemWidget for added packages
+        sizePolicy11 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
         try:
             utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
             spec = importlib.util.spec_from_file_location('removable_item', utils_path)
@@ -492,7 +521,6 @@ class Ui_Widget(object):
             self.LAYOUTPKGAdded.setObjectName(u"LAYOUTPKGAdded")
             self.LABELPKGAdded = QLabel(self.FRAMEPKGAdded)
             self.LABELPKGAdded.setObjectName(u"LABELPKGAdded")
-            sizePolicy11 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
             sizePolicy11.setHorizontalStretch(0)
             sizePolicy11.setVerticalStretch(0)
             sizePolicy11.setHeightForWidth(self.LABELPKGAdded.sizePolicy().hasHeightForWidth())
@@ -551,6 +579,7 @@ class Ui_Widget(object):
         self.EDITNODENew.setObjectName(u"EDITNODENew")
         sizePolicy2.setHeightForWidth(self.EDITNODENew.sizePolicy().hasHeightForWidth())
         self.EDITNODENew.setSizePolicy(sizePolicy2)
+        self.EDITNODENew.setPlaceholderText("new_node")
 
         self.horizontalLayout_16.addWidget(self.EDITNODENew)
 
@@ -558,6 +587,12 @@ class Ui_Widget(object):
         self.CBNODENew.addItem("")
         self.CBNODENew.addItem("")
         self.CBNODENew.setObjectName(u"CBNODENew")
+        self.CBNODENew.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        if not arrow_down_icon.isNull() and not arrow_up_icon.isNull():
+            self.CBNODENew.setStyleSheet(f"""
+                QComboBox::down-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'down.svg'))}); }}
+                QComboBox::up-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'up.svg'))}); }}
+            """)
 
         self.horizontalLayout_16.addWidget(self.CBNODENew)
 
@@ -581,6 +616,12 @@ class Ui_Widget(object):
         self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 340, 92))
         self.verticalLayout_16 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_16.setObjectName(u"verticalLayout_16")
+        self.FRAMENODEAdded.setProperty('role', 'node-list')
+        self.FRAMENODEAdded.setProperty('variant', 'default')
+        self.FRAMENODEAdded.setProperty('state', 'normal')
+        self.scrollAreaWidgetContents_2.setProperty('role', 'node-scroll')
+        self.scrollAreaWidgetContents_2.setProperty('variant', 'default')
+        self.scrollAreaWidgetContents_2.setProperty('state', 'normal')
         # try RemovableItemWidget for node entries
         try:
             utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
@@ -638,6 +679,7 @@ class Ui_Widget(object):
         self.EDITLAUNCHNew.setObjectName(u"EDITLAUNCHNew")
         sizePolicy2.setHeightForWidth(self.EDITLAUNCHNew.sizePolicy().hasHeightForWidth())
         self.EDITLAUNCHNew.setSizePolicy(sizePolicy2)
+        self.EDITLAUNCHNew.setPlaceholderText("new_launch")
 
         self.horizontalLayout_17.addWidget(self.EDITLAUNCHNew)
 
@@ -646,6 +688,12 @@ class Ui_Widget(object):
         self.CBLAUNCHNew.addItem("")
         self.CBLAUNCHNew.addItem("")
         self.CBLAUNCHNew.setObjectName(u"CBLAUNCHNew")
+        self.CBLAUNCHNew.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        if not arrow_down_icon.isNull() and not arrow_up_icon.isNull():
+            self.CBLAUNCHNew.setStyleSheet(f"""
+                QComboBox::down-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'down.svg'))}); }}
+                QComboBox::up-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'up.svg'))}); }}
+            """)
 
         self.horizontalLayout_17.addWidget(self.CBLAUNCHNew)
 
@@ -669,6 +717,12 @@ class Ui_Widget(object):
         self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 340, 92))
         self.verticalLayout_13 = QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_13.setObjectName(u"verticalLayout_13")
+        self.FRAMELAUNCHAdd.setProperty('role', 'node-list')
+        self.FRAMELAUNCHAdd.setProperty('variant', 'default')
+        self.FRAMELAUNCHAdd.setProperty('state', 'normal')
+        self.scrollAreaWidgetContents_3.setProperty('role', 'node-scroll')
+        self.scrollAreaWidgetContents_3.setProperty('variant', 'default')
+        self.scrollAreaWidgetContents_3.setProperty('state', 'normal')
         # try RemovableItemWidget for launch entries
         try:
             utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
