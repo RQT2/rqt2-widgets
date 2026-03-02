@@ -68,7 +68,7 @@ class TitleBar(QWidget):
         self._btn_min = self._make_button('minimize/default.svg', 'Minimize')
         self._btn_max = self._make_button('maximize/default.svg', 'Maximize')
         self._btn_close = self._make_button('close/default.svg', 'Close')
-        self._btn_close.setProperty('role', 'button')
+        self._btn_close.setProperty('role', 'close')
         self._btn_close.setProperty('variant', 'default')
         self._btn_close.setProperty('state', 'normal')
 

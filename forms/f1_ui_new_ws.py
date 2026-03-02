@@ -197,7 +197,7 @@ class Ui_Widget(object):
         icon_del_pkg.addFile(icon_del_pkg_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNDel_my_pkg.setIcon(icon_del_pkg)
         self.BTNDel_my_pkg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-        self.BTNDel_my_pkg.setProperty('role', 'button')
+        self.BTNDel_my_pkg.setProperty('role', 'close')
         self.BTNDel_my_pkg.setProperty('variant', 'default')
         self.BTNDel_my_pkg.setProperty('state', 'normal')
 
