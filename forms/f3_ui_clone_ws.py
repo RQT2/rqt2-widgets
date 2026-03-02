@@ -103,7 +103,7 @@ class Ui_Widget(object):
         self.BTNUri = QPushButton(self.scrollAreaWidgetContents)
         self.BTNUri.setObjectName(u"BTNUri")
         icon = QIcon()
-        icon_path = _resolve_icon(icon_dirs, _resolve_icon(icon_dirs, os.path.join('emulator', 'default.svg')))
+        icon_path = _resolve_icon(icon_dirs, os.path.join('emulator', 'default.svg'))
         icon.addFile(icon_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNUri.setIcon(icon)
         self.BTNUri.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) 
@@ -130,7 +130,11 @@ class Ui_Widget(object):
 
         self.BTNDir = QPushButton(self.scrollAreaWidgetContents)
         self.BTNDir.setObjectName(u"BTNDir")
-        icon1 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.FolderOpen))
+        
+        icon1 = QIcon()
+        icon1_path = _resolve_icon(icon_dirs, os.path.join('folder', 'default.svg'))
+        icon1.addFile(icon1_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        
         self.BTNDir.setIcon(icon1)
         self.BTNDir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) 
 

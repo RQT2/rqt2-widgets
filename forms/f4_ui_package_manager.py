@@ -241,6 +241,7 @@ class Ui_Widget(object):
         self.verticalLayout_3.addWidget(self.pkg_view)
 
         # clicking the Action column toggles the 'pending' state (does not apply changes)
+        #self.pkg_model.load_from_url("http://packages.ros.org/ros2/ubuntu/dists/noble/main/binary-amd64/Packages")
         def _on_pkg_clicked(index):
             try:
                 if index.column() == 3:
