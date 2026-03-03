@@ -21,8 +21,8 @@ except Exception:
     _spec.loader.exec_module(_mod)
     TitleBar = _mod.TitleBar
     
-theme = 'dark.qss'  # or 'light.qss'
-logo_variant = 'dark'  # or 'dark' or 'light'
+theme = 'light.qss'  # or 'light.qss'
+logo_variant = 'color'  # or 'dark' or 'light'
 
 
 class DemoWindow(QWidget):
