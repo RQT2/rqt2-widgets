@@ -86,10 +86,11 @@ except Exception:
             return os.path.normpath(os.path.join(icon_dirs, rel_path))
 
 class Ui_Widget(object):
-    def setupUi(self, Widget, icon_dirs=None):
+    def setupUi(self, Widget, icon_dirs=None, theme: str = 'default.qss'):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
         Widget.resize(810, 870)
+        self.theme = theme
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -97,7 +98,7 @@ class Ui_Widget(object):
         Widget.setSizePolicy(sizePolicy)
         Widget.setMinimumSize(QSize(810, 870))
         icon = QIcon()
-        icon_path = _resolve_icon(icon_dirs, os.path.join('logo.svg'))
+        icon_path = _resolve_icon(icon_dirs, os.path.join('logo.svg'), theme=self.theme)
         icon.addFile(icon_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.verticalLayout_17 = QVBoxLayout(Widget)
         self.verticalLayout_17.setObjectName(u"verticalLayout_17")
@@ -155,7 +156,7 @@ class Ui_Widget(object):
         self.BTNPKGNew = QPushButton(Widget)
         self.BTNPKGNew.setObjectName(u"BTNPKGNew")
         icon1 = QIcon()
-        icon1_path = _resolve_icon(icon_dirs, os.path.join('new', 'default.svg'))
+        icon1_path = _resolve_icon(icon_dirs, os.path.join('new', 'default.svg'), theme=self.theme)
         icon1.addFile(icon1_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNPKGNew.setIcon(icon1)
         self.BTNPKGNew.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -193,7 +194,7 @@ class Ui_Widget(object):
         self.BTNDel_my_pkg = QPushButton(self.TAB_my_pkg)
         self.BTNDel_my_pkg.setObjectName(u"BTNDel_my_pkg")
         icon_del_pkg = QIcon()
-        icon_del_pkg_path = _resolve_icon(icon_dirs, os.path.join('close', 'default.svg'))
+        icon_del_pkg_path = _resolve_icon(icon_dirs, os.path.join('close', 'default.svg'), theme=self.theme)
         icon_del_pkg.addFile(icon_del_pkg_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNDel_my_pkg.setIcon(icon_del_pkg)
         self.BTNDel_my_pkg.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -452,7 +453,7 @@ class Ui_Widget(object):
         self.BTNPKGDir.setSizePolicy(sizePolicy10)
         self.BTNPKGDir.setMaximumSize(QSize(16777215, 16777215))
         icon2 = QIcon()
-        icon2_path = _resolve_icon(icon_dirs, os.path.join('folder', 'default.svg'))
+        icon2_path = _resolve_icon(icon_dirs, os.path.join('folder', 'default.svg'), theme=self.theme)
         icon2.addFile(icon2_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         self.BTNPKGDir.setIcon(icon2)
         self.BTNPKGDir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -510,7 +511,7 @@ class Ui_Widget(object):
             self.LAYOUTPKGAdded = QHBoxLayout()
             self.LAYOUTPKGAdded.setObjectName(u"LAYOUTPKGAdded")
             """
-            sample = RemovableItemWidget(text="rlcpp", parent=self.FRAMEPKGAdded, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg')))
+            sample = RemovableItemWidget(text="rlcpp", parent=self.FRAMEPKGAdded, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg'), theme=theme))
             self.LABELPKGAdded = sample.label
             self.BTNPKGAdded = sample.button
             self.LAYOUTPKGAdded.addWidget(sample)
@@ -531,7 +532,7 @@ class Ui_Widget(object):
             self.BTNPKGAdded = QPushButton(self.FRAMEPKGAdded)
             self.BTNPKGAdded.setObjectName(u"BTNPKGAdded")
             icon3 = QIcon()
-            icon3_path = _resolve_icon(icon_dirs, os.path.join('close', 'default.svg'))
+            icon3_path = _resolve_icon(icon_dirs, os.path.join('close', 'default.svg'), theme=self.theme)
             icon3.addFile(icon3_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
             self.BTNPKGAdded.setIcon(icon3)
             self.BTNPKGAdded.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
@@ -633,7 +634,7 @@ class Ui_Widget(object):
             self.LAYOUTNODEAdded = QHBoxLayout()
             self.LAYOUTNODEAdded.setObjectName(u"LAYOUTNODEAdded")
             """
-            sample = RemovableItemWidget(text="my_node.py", parent=self.scrollAreaWidgetContents_2, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg')))
+            sample = RemovableItemWidget(text="my_node.py", parent=self.scrollAreaWidgetContents_2, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg'), theme=theme))
             self.LABELNODEAdded = sample.label
             self.BTNNODEAdded = sample.button
             self.LAYOUTNODEAdded.addWidget(sample)
@@ -734,7 +735,7 @@ class Ui_Widget(object):
             self.LAYOUTLAUNCHAdded = QHBoxLayout()
             self.LAYOUTLAUNCHAdded.setObjectName(u"LAYOUTLAUNCHAdded")
             """
-            sample = RemovableItemWidget(text="my_launcher.python.py", parent=self.scrollAreaWidgetContents_3, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg')))
+            sample = RemovableItemWidget(text="my_launcher.python.py", parent=self.scrollAreaWidgetContents_3, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg'), theme=theme))
             self.LABELLAUNCHAdded = sample.label
             self.BTNLAUNCHAdded = sample.button
             self.LAYOUTLAUNCHAdded.addWidget(sample)
@@ -978,7 +979,7 @@ class Ui_Widget(object):
             RemovableItemWidget = rem_mod.RemovableItemWidget
 
             widget = RemovableItemWidget(text=name, parent=(node_container or self.scrollAreaWidgetContents_2),
-                                         icon_path=_resolve_icon(self._icon_dirs, os.path.join('close', 'default.svg')))
+                                         icon_path=_resolve_icon(self._icon_dirs, os.path.join('close', 'default.svg'), theme=self.theme))
             # insert before the spacer (last item)
             if target_layout is not None:
                 target_layout.insertWidget(max(0, target_layout.count()-1), widget)
@@ -1074,7 +1075,7 @@ class Ui_Widget(object):
             RemovableItemWidget = rem_mod.RemovableItemWidget
 
             widget = RemovableItemWidget(text=name, parent=(launch_container or self.scrollAreaWidgetContents_3),
-                                         icon_path=_resolve_icon(self._icon_dirs, os.path.join('close', 'default.svg')))
+                                         icon_path=_resolve_icon(self._icon_dirs, os.path.join('close', 'default.svg'), theme=self.theme))
             if target_layout is not None:
                 target_layout.insertWidget(max(0, target_layout.count()-1), widget)
                 try:
@@ -1130,10 +1131,9 @@ class Ui_Widget(object):
             # instantiate a temporary Ui_Widget to reuse the TAB_my_pkg template
             temp_root = QWidget()
             temp_ui = type(self)()
-            temp_ui.setupUi(temp_root, icon_dirs=self._icon_dirs)
+            temp_ui.setupUi(temp_root, icon_dirs=self._icon_dirs, theme=self.theme)
 
             # grab the template tab widget
-            template_tab = None
             try:
                 template_tab = temp_ui.TAB_my_pkg
             except Exception:

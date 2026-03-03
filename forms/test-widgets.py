@@ -20,10 +20,14 @@ except Exception:
     _mod = _il.module_from_spec(_spec)
     _spec.loader.exec_module(_mod)
     TitleBar = _mod.TitleBar
+    
+theme = 'dark.qss'  # or 'light.qss'
+logo_variant = 'dark'  # or 'dark' or 'light'
 
 
 class DemoWindow(QWidget):
-    def __init__(self, ui_class, title=None, icon_dirs=None, parent=None, show_daemon=False, show_tab=False):
+    def __init__(self, ui_class, title: str = None, icon_dirs: list = None, parent=None, logo_variant: str = "color",
+                 show_daemon: bool = False, show_tab: bool = False, theme: str = "default.qss"):
         super().__init__(parent)
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
@@ -39,7 +43,8 @@ class DemoWindow(QWidget):
         container_layout.setContentsMargins(0, 0, 0, 0)
         container_layout.setSpacing(0)
 
-        self.titlebar = TitleBar(self, show_daemon=show_daemon, show_tab=show_tab, icon_dirs=icon_dirs)
+        self.titlebar = TitleBar(self, show_daemon=show_daemon, logo_variant=logo_variant,
+                                 show_tab=show_tab, icon_dirs=icon_dirs, theme=theme)
         if title:
             self.titlebar.setTitle(title)
 
@@ -57,7 +62,7 @@ class DemoWindow(QWidget):
         self.content.setObjectName("Content")
         self.ui = ui_class()
         try:
-            self.ui.setupUi(self.content, icon_dirs)
+            self.ui.setupUi(self.content, icon_dirs=icon_dirs, theme=theme)
         except TypeError:
             self.ui.setupUi(self.content)
         container_layout.addWidget(self.titlebar)
@@ -139,7 +144,7 @@ if __name__ == "__main__":
     except Exception as e:
         pass
 
-    qss_path = os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'styles/themes', 'default.qss'))
+    qss_path = os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'styles/themes', theme))
     try:
         if os.path.exists(qss_path):
             with open(qss_path, 'r') as _f:
@@ -165,7 +170,8 @@ if __name__ == "__main__":
     ]
 
     for ui_class, title, show_daemon, show_tab in mapping:
-        w = DemoWindow(ui_class, title=title, icon_dirs=icons_dirs, show_daemon=show_daemon, show_tab=show_tab)
+        w = DemoWindow(ui_class, title=title, icon_dirs=icons_dirs, show_daemon=show_daemon, 
+            logo_variant=logo_variant, show_tab=show_tab, theme=theme)
         w.show()
         windows.append(w)
 

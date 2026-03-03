@@ -38,7 +38,7 @@ class TitleBar(QWidget):
     closeRequested = Signal()
 
     def __init__(self, parent=None, show_daemon: bool = False, show_tab: bool = False,
-                 logo_variant: str = "color", icon_dirs: Optional[List[str]] = None):
+                 logo_variant: str = "color", icon_dirs: Optional[List[str]] = None, theme: str = "default.qss"):
         super().__init__(parent)
         self.setObjectName("TitleBar")
         self.setProperty('role', 'titlebox')
@@ -65,9 +65,9 @@ class TitleBar(QWidget):
         # Action buttons (optional)
 
         # Window control buttons
-        self._btn_min = self._make_button('minimize/default.svg', 'Minimize')
-        self._btn_max = self._make_button('maximize/default.svg', 'Maximize')
-        self._btn_close = self._make_button('close/default.svg', 'Close')
+        self._btn_min = self._make_button('minimize/default.svg', 'Minimize', theme=theme)
+        self._btn_max = self._make_button('maximize/default.svg', 'Maximize', theme=theme)
+        self._btn_close = self._make_button('close/default.svg', 'Close', theme=theme)
         self._btn_close.setProperty('role', 'close')
         self._btn_close.setProperty('variant', 'default')
         self._btn_close.setProperty('state', 'normal')
@@ -81,12 +81,12 @@ class TitleBar(QWidget):
         layout.addItem(self._spacer)
 
         if show_daemon:
-            self._btn_daemon = self._make_button('daemon/default.svg', 'Restart daemon')
+            self._btn_daemon = self._make_button('daemon/default.svg', 'Restart daemon', theme=theme)
             layout.addWidget(self._btn_daemon)
             self._btn_daemon.clicked.connect(self.restartDaemonRequested.emit)
 
         if show_tab:
-            self._btn_tab = self._make_button('tab/default.svg', 'Split terminal')
+            self._btn_tab = self._make_button('tab/default.svg', 'Split terminal', theme=theme)
             layout.addWidget(self._btn_tab)
             self._btn_tab.clicked.connect(self.splitTerminalRequested.emit)
 
@@ -102,7 +102,7 @@ class TitleBar(QWidget):
         # initialize logo
         self.setLogoVariant(logo_variant)
 
-    def _make_button(self, rel_icon_path: str, tooltip: str) -> QPushButton:
+    def _make_button(self, rel_icon_path: str, tooltip: str, theme: str = "default.qss") -> QPushButton:
         btn = QPushButton(self)
         btn.setToolTip(tooltip)
         btn.setFlat(True)
@@ -119,7 +119,7 @@ class TitleBar(QWidget):
             
             if p and os.path.exists(p) and p.lower().endswith('.svg') and hasattr(icon_loader, 'recolor_svg_to_temp'):
                 try:
-                    p2 = icon_loader.recolor_svg_to_temp(p)
+                    p2 = icon_loader.recolor_svg_to_temp(p, theme=theme)
                     if p2 and os.path.exists(p2):
                         ico.addFile(p2)
                 except Exception:

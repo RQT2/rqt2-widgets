@@ -103,7 +103,7 @@ def _parse_qss_palette(qss_paths):
     return None
 
 
-def _resolve_icon(icon_dirs: Optional[Iterable[str]], rel_path: str) -> str:
+def _resolve_icon(icon_dirs: Optional[Iterable[str]], rel_path: str, theme: str = 'default.qss') -> str:
     """Resolve icon path; for SVGs return a recolored temporary copy using the
     `color` value read from QSS `@palette` block (themes/default.qss or default.qss).
 
@@ -119,8 +119,8 @@ def _resolve_icon(icon_dirs: Optional[Iterable[str]], rel_path: str) -> str:
 
     # try to obtain color from QSS palette block
     qss_paths = [
-        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2-components', 'styles', 'default.qss')),
-        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2-components', 'styles', 'themes', 'default.qss')),
+        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2-components', 'styles', theme)),
+        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2-components', 'styles', 'themes', theme)),
     ]
     color = _parse_qss_palette(qss_paths)
     if not color:
@@ -196,7 +196,7 @@ def _resolve_icon(icon_dirs: Optional[Iterable[str]], rel_path: str) -> str:
         return path
 
 
-def recolor_svg_to_temp(src_path: str, color: Optional[str] = None) -> str:
+def recolor_svg_to_temp(src_path: str, color: Optional[str] = None, theme: str = 'default.qss') -> str:
     """Create a recolored temporary copy of an SVG file and return its path.
 
     - If `color` is None the function will attempt to read the `@palette` block
@@ -213,8 +213,8 @@ def recolor_svg_to_temp(src_path: str, color: Optional[str] = None) -> str:
         return src_path
 
     qss_paths = [
-        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2-components', 'styles', 'default.qss')),
-        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2-components', 'styles', 'themes', 'default.qss')),
+        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2-components', 'styles', theme)),
+        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2-components', 'styles', 'themes', theme)),
     ]
     if color is None:
         color = _parse_qss_palette(qss_paths) or '#000000'

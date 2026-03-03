@@ -38,7 +38,7 @@ class FrameButtonWidget(QFrame):
 
     def __init__(self, icon_path: Optional[str] = None, title: str = "", info: str = "",
                  parent=None, icon_dirs: Optional[List[str]] = None, max_size: int = 512,
-                 apply_theme_from_palette: bool = True):
+                 apply_theme_from_palette: bool = True, theme: str = 'default.qss'):
         super().__init__(parent)
         self.setCursor(QCursor(Qt.PointingHandCursor))
         # objectName kept for compatibility; use properties for styling (role/variant/state)
@@ -68,7 +68,7 @@ class FrameButtonWidget(QFrame):
         layout.addWidget(self.info, 0)
 
         if icon_path:
-            pix = self._load_pix(icon_path)
+            pix = self._load_pix(icon_path, theme=theme) 
             if pix and not pix.isNull():
                 self.icon.setPixmap(pix)
 
@@ -124,14 +124,14 @@ class FrameButtonWidget(QFrame):
         except Exception:
             pass
 
-    def _load_pix(self, rel_path: str) -> QPixmap:
+    def _load_pix(self, rel_path: str, theme: str = 'default.qss') -> QPixmap:
         # Prefer explicit resolution so we can surface useful diagnostics
         base = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
 
         # 1) Prefer icon_loader._resolve_icon (it may return recolored temp SVG)
         try:
             if hasattr(icon_loader, 'recolor_svg_to_temp'):
-                temp_svg = icon_loader.recolor_svg_to_temp(rel_path)
+                temp_svg = icon_loader.recolor_svg_to_temp(rel_path, theme=theme)
             else:
                 temp_svg = rel_path
             if temp_svg and os.path.exists(temp_svg):
@@ -209,7 +209,7 @@ class FrameButtonWidget(QFrame):
     def setInfo(self, text: str):
         self.info.setText(text)
 
-    def setIcon(self, path: str):
-        pix = self._load_pix(path)
+    def setIcon(self, path: str, theme: str = 'default.qss'):
+        pix = self._load_pix(path, theme=theme)
         if pix and not pix.isNull():
             self.icon.setPixmap(pix)

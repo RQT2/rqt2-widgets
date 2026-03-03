@@ -36,7 +36,7 @@ def _resolve_icon(icon_dirs, rel_path):
         return os.path.normpath(os.path.join(icon_dirs, rel_path))
 
 class Ui_Widget(object):
-    def setupUi(self, Widget, icon_dirs=None):
+    def setupUi(self, Widget, icon_dirs=None, theme='default.qss'):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
         Widget.resize(1209, 677)
@@ -137,7 +137,9 @@ class Ui_Widget(object):
         spec.loader.exec_module(frame_mod)
         FrameButtonWidget = frame_mod.FrameButtonWidget
 
-        self.FRAMENew = FrameButtonWidget(icon_path=_resolve_icon(icon_dirs, os.path.join('new', 'default.svg')), title="", info="", parent=Widget)
+        self.FRAMENew = FrameButtonWidget(
+            icon_path=_resolve_icon(icon_dirs, os.path.join('new', 'default.svg')), 
+            title="", info="", parent=Widget, theme=theme)
         self.FRAMENew.setObjectName(u"FRAMENew")
         # provide compatibility attributes used elsewhere
         self.ICONNew = self.FRAMENew.icon
@@ -156,7 +158,9 @@ class Ui_Widget(object):
         spec.loader.exec_module(frame_mod)
         FrameButtonWidget = frame_mod.FrameButtonWidget
 
-        self.FRAMEOpen = FrameButtonWidget(icon_path=_resolve_icon(icon_dirs, os.path.join('load', 'default.svg')), title="", info="", parent=Widget)
+        self.FRAMEOpen = FrameButtonWidget(
+            icon_path=_resolve_icon(icon_dirs, os.path.join('load', 'default.svg')), 
+            title="", info="", parent=Widget, theme=theme)
         self.FRAMEOpen.setObjectName(u"FRAMEOpen")
         self.ICONOpen = self.FRAMEOpen.icon
         self.LABELTitleOpen = self.FRAMEOpen.title
@@ -174,7 +178,9 @@ class Ui_Widget(object):
         spec.loader.exec_module(frame_mod)
         FrameButtonWidget = frame_mod.FrameButtonWidget
 
-        self.FRAMEClone = FrameButtonWidget(icon_path=_resolve_icon(icon_dirs, os.path.join('arrows', 'down.svg')), title="", info="", parent=Widget)
+        self.FRAMEClone = FrameButtonWidget(
+            icon_path=_resolve_icon(icon_dirs, os.path.join('arrows', 'down.svg')), 
+            title="", info="", parent=Widget, theme=theme)
         self.FRAMEClone.setObjectName(u"FRAMEClone")
         self.ICONClone = self.FRAMEClone.icon
         self.LABELTitleClone = self.FRAMEClone.title
