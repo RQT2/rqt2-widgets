@@ -175,7 +175,7 @@ class PackageTableModel(QAbstractTableModel):
         self.set_packages(pkgs)
 
 class Ui_Widget(object):
-    def setupUi(self, Widget, icon_dirs=None):
+    def setupUi(self, Widget, icon_dirs=None, theme: str = "default.qss"):
         if not Widget.objectName():
             Widget.setObjectName(u"Widget")
         Widget.resize(575, 350)
