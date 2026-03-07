@@ -119,8 +119,8 @@ def _resolve_icon(icon_dirs: Optional[Iterable[str]], rel_path: str, theme: str 
 
     # try to obtain color from QSS palette block
     qss_paths = [
-        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2-components', 'styles', theme)),
-        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2-components', 'styles', 'themes', theme)),
+        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2_components', 'styles', theme)),
+        os.path.normpath(os.path.join(os.path.dirname(__file__), '..', '..', 'rqt2_components', 'styles', 'themes', theme)),
     ]
     color = _parse_qss_palette(qss_paths)
     if not color:
