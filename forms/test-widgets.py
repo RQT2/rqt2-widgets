@@ -21,7 +21,7 @@ except Exception:
     _spec.loader.exec_module(_mod)
     TitleBar = _mod.TitleBar
     
-theme = 'light.qss'  # or 'light.qss'
+theme = 'dark.qss'  # or 'light.qss'
 logo_variant = 'color'  # or 'dark' or 'light'
 
 
