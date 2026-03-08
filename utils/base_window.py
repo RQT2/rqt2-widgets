@@ -10,7 +10,7 @@ class DemoWindow(QWidget):
                  show_tab: bool = False, theme: str = "default.qss"):
         super().__init__(parent)
         
-        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         layout = QVBoxLayout(self)
