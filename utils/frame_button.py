@@ -182,8 +182,8 @@ class FrameButtonWidget(QFrame):
         # 4) Try several plausible candidates relative to known locations
         candidates = [
             os.path.normpath(os.path.join(base, 'icons', rel_path)),
-            os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'assets', 'branding', rel_path)),
-            os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'assets', 'icons', rel_path)),
+            os.path.normpath(os.path.join(base, '..', 'rqt2_components', 'assets', 'branding', rel_path)),
+            os.path.normpath(os.path.join(base, '..', 'rqt2_components', 'assets', 'icons', rel_path)),
             os.path.normpath(rel_path),
         ]
         for p in candidates:
