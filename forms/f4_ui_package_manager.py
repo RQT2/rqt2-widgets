@@ -69,7 +69,7 @@ except Exception:
 
 # Lightweight table model for packages used by the package manager UI.
 class PackageTableModel(QAbstractTableModel):
-    HEADERS = ["Nombre", "Link", "Estado", "Acción"]
+    HEADERS = ["Nombre", "Estado", "Acción"]
 
     def __init__(self, packages=None, parent=None):
         super().__init__(parent)
@@ -99,13 +99,11 @@ class PackageTableModel(QAbstractTableModel):
             if col == 0:
                 return pkg.get("name")
             if col == 1:
-                return pkg.get("link")
-            if col == 2:
                 # three-state: Installed / Uninstalled / Pending
                 if pkg.get("pending"):
                     return "Pendiente"
                 return "Instalado" if pkg.get("installed") else "Desinstalado"
-            if col == 3:
+            if col == 2:
                 # action shows request/ cancel
                 return "Solicitar" if not pkg.get("pending") else "Cancelar"
         return None
@@ -121,7 +119,6 @@ class PackageTableModel(QAbstractTableModel):
         for p in packages:
             item = {
                 'name': p.get('name', ''),
-                'link': p.get('link', ''),
                 'installed': bool(p.get('installed', False)),
                 'pending': False,
             }
@@ -132,8 +129,8 @@ class PackageTableModel(QAbstractTableModel):
         if row < 0 or row >= len(self._data):
             return
         self._data[row]['pending'] = not self._data[row].get('pending', False)
-        left = self.index(row, 2)
-        right = self.index(row, 3)
+        left = self.index(row, 1)
+        right = self.index(row, 2)
         self.dataChanged.emit(left, right, [Qt.ItemDataRole.DisplayRole])
         # return number of pending items after the toggle
         return sum(1 for it in self._data if it.get('pending'))
@@ -148,8 +145,8 @@ class PackageTableModel(QAbstractTableModel):
                 item['installed'] = not prev
                 item['pending'] = False
                 ops.append((item['name'], 'install' if item['installed'] else 'uninstall'))
-                left = self.index(i, 2)
-                right = self.index(i, 3)
+                left = self.index(i, 1)
+                right = self.index(i, 2)
                 self.dataChanged.emit(left, right, [Qt.ItemDataRole.DisplayRole])
         return ops
 
@@ -169,7 +166,7 @@ class PackageTableModel(QAbstractTableModel):
                     name = line.split(':', 1)[1].strip()
                     break
             if name:
-                pkgs.append({'name': name, 'link': 'ver', 'installed': False})
+                pkgs.append({'name': name, 'installed': False})
             if len(pkgs) >= max_items:
                 break
         self.set_packages(pkgs)
@@ -244,7 +241,7 @@ class Ui_Widget(object):
         #self.pkg_model.load_from_url("http://packages.ros.org/ros2/ubuntu/dists/noble/main/binary-amd64/Packages")
         def _on_pkg_clicked(index):
             try:
-                if index.column() == 3:
+                if index.column() == 2:
                     self.pkg_model.request_toggle_pending(index.row())
                     try:
                         self._update_apply_button()
