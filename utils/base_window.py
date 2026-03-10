@@ -10,6 +10,7 @@ class DemoWindow(QWidget):
                  show_tab: bool = False, theme: str = "default.qss"):
         super().__init__(parent)
         
+        self.setMouseTracking(True)
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
 
@@ -48,6 +49,20 @@ class DemoWindow(QWidget):
 
         self._drag_pos = None
         self.titlebar.installEventFilter(self)
+
+    def mouseMoveEvent(self, event):
+        pos = event.position().toPoint()
+        rect = self.rect()
+        margin = 5
+    
+        if pos.x() > rect.width() - margin and pos.y() > rect.height() - margin:
+            self.setCursor(Qt.CursorShape.SizeFDiagCursor)
+        elif pos.x() > rect.width() - margin:
+            self.setCursor(Qt.CursorShape.SizeHorCursor)
+        elif pos.y() > rect.height() - margin:
+            self.setCursor(Qt.CursorShape.SizeVerCursor)
+        else:
+            self.setCursor(Qt.CursorShape.ArrowCursor)
 
     def _toggle_maximize(self):
         if self.isMaximized():
