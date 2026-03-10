@@ -108,7 +108,7 @@ class Ui_Widget(object):
         self.BTNUri.setIcon(icon)
         self.BTNUri.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) 
 
-        self.horizontalLayout_4.addWidget(self.BTNUri)
+        #self.horizontalLayout_4.addWidget(self.BTNUri)
 
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_4)
