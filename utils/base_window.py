@@ -73,15 +73,6 @@ class DemoWindow(QWidget):
         rect = self.rect()
         margin = 8
 
-        if pos.x() > rect.width() - margin and pos.y() > rect.height() - margin:
-            self.setCursor(Qt.CursorShape.SizeFDiagCursor)
-        elif pos.x() > rect.width() - margin:
-            self.setCursor(Qt.CursorShape.SizeHorCursor)
-        elif pos.y() > rect.height() - margin:
-            self.setCursor(Qt.CursorShape.SizeVerCursor)
-        else:
-            self.setCursor(Qt.CursorShape.ArrowCursor)
-
         if self._resizing:
             new_width = rect.width()
             new_height = rect.height()
@@ -93,7 +84,15 @@ class DemoWindow(QWidget):
 
             self.resize(max(self.minimumWidth(), new_width), 
                         max(self.minimumHeight(), new_height))
-            return
+
+        if pos.x() > rect.width() - margin and pos.y() > rect.height() - margin:
+            self.setCursor(Qt.CursorShape.SizeFDiagCursor)
+        elif pos.x() > rect.width() - margin:
+            self.setCursor(Qt.CursorShape.SizeHorCursor)
+        elif pos.y() > rect.height() - margin:
+            self.setCursor(Qt.CursorShape.SizeVerCursor)
+        else:
+            self.setCursor(Qt.CursorShape.ArrowCursor)
 
     def mouseReleaseEvent(self, event):
         self._resizing = False
