@@ -48,13 +48,44 @@ class DemoWindow(QWidget):
         layout.addWidget(self.main_container)
 
         self._drag_pos = None
+        self._resizing = False
+        self._resize_edge = None
         self.titlebar.installEventFilter(self)
+
+    def mousePressEvent(self, event):
+        if event.button() == Qt.LeftButton:
+            pos = event.position().toPoint()
+            rect = self.rect()
+            margin = 8
+            
+            if pos.x() > rect.width() - margin and pos.y() > rect.height() - margin:
+                self._resize_edge = "both"
+                self._resizing = True
+            elif pos.x() > rect.width() - margin:
+                self._resize_edge = "right"
+                self._resizing = True
+            elif pos.y() > rect.height() - margin:
+                self._resize_edge = "bottom"
+                self._resizing = True
 
     def mouseMoveEvent(self, event):
         pos = event.position().toPoint()
         rect = self.rect()
-        margin = 5
-    
+        margin = 8
+
+        if self._resizing:
+            new_width = rect.width()
+            new_height = rect.height()
+
+            if self._resize_edge in ["right", "both"]:
+                new_width = pos.x()
+            if self._resize_edge in ["bottom", "both"]:
+                new_height = pos.y()
+
+            self.resize(max(self.minimumWidth(), new_width), 
+                        max(self.minimumHeight(), new_height))
+            return
+
         if pos.x() > rect.width() - margin and pos.y() > rect.height() - margin:
             self.setCursor(Qt.CursorShape.SizeFDiagCursor)
         elif pos.x() > rect.width() - margin:
@@ -63,6 +94,11 @@ class DemoWindow(QWidget):
             self.setCursor(Qt.CursorShape.SizeVerCursor)
         else:
             self.setCursor(Qt.CursorShape.ArrowCursor)
+
+    def mouseReleaseEvent(self, event):
+        self._resizing = False
+        self._resize_edge = None
+        self.setCursor(Qt.CursorShape.ArrowCursor)
 
     def _toggle_maximize(self):
         if self.isMaximized():
