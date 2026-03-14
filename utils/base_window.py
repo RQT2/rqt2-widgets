@@ -1,6 +1,6 @@
 import os
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QFrame, QSizePolicy
-from PySide6.QtCore import Qt, QEvent, Signal
+from PySide6.QtCore import Qt, QEvent, Signal, QTimer
 
 from .titlebar import TitleBar
 
@@ -148,10 +148,27 @@ class DemoWindow(QWidget):
 
     def _on_theme_changed(self, theme: str):
         try:
+            container_layout = self.main_container.layout()
+
+            new_content = QWidget(self.main_container)
+            new_content.setObjectName("Content")
+
+            if container_layout is not None:
+                container_layout.replaceWidget(self.content, new_content)
+            else:
+                self.main_container.layout().addWidget(new_content)
+
+            old_content = self.content
+            self.content = new_content
+
             try:
                 self.ui.setupUi(self.content, icon_dirs=self._initial_icon_dirs, theme=theme)
             except TypeError:
                 self.ui.setupUi(self.content)
+
+            old_content.hide()
+            QTimer.singleShot(0, old_content.deleteLater)
+
             self.main_container.style().unpolish(self.main_container)
             self.main_container.style().polish(self.main_container)
             try:
