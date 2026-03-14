@@ -16,21 +16,14 @@ except Exception:
     _mod = _il.module_from_spec(_spec)
     _spec.loader.exec_module(_mod)
     icon_loader = _mod
+try:
+    from .theme_manager import get_theme_manager
+    _theme_manager = get_theme_manager()
+except Exception:
+    _theme_manager = None
 
 
 class TitleBar(QWidget):
-    """Custom title bar with logo, title and action/window buttons.
-
-    Buttons (left-to-right): [logo] [title] [spacer] [daemon?] [tab?] [minimize] [maximize] [close]
-
-    Signals:
-      - restartDaemonRequested
-      - splitTerminalRequested
-      - minimizeRequested
-      - maximizeRequested
-      - closeRequested
-    """
-
     restartDaemonRequested = Signal()
     splitTerminalRequested = Signal()
     minimizeRequested = Signal()
@@ -47,7 +40,6 @@ class TitleBar(QWidget):
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.setFixedHeight(40)
 
-
         self.icon_dirs = icon_dirs or []
 
         self._logo = QLabel(self)
@@ -62,9 +54,6 @@ class TitleBar(QWidget):
 
         self._spacer = QSpacerItem(8, 8, QSizePolicy.Expanding, QSizePolicy.Minimum)
 
-        # Action buttons (optional)
-
-        # Window control buttons
         self._btn_min = self._make_button('minimize/default.svg', 'Minimize', theme=theme)
         self._btn_max = self._make_button('maximize/default.svg', 'Maximize', theme=theme)
         self._btn_close = self._make_button('close/default.svg', 'Close', theme=theme)
@@ -72,7 +61,6 @@ class TitleBar(QWidget):
         self._btn_close.setProperty('variant', 'default')
         self._btn_close.setProperty('state', 'normal')
 
-        # Build layout
         layout = QHBoxLayout(self)
         layout.setContentsMargins(8, 4, 8, 4)
         layout.setSpacing(6)
@@ -94,13 +82,51 @@ class TitleBar(QWidget):
         layout.addWidget(self._btn_max)
         layout.addWidget(self._btn_close)
 
-        # Connect window controls
         self._btn_min.clicked.connect(self.minimizeRequested.emit)
         self._btn_max.clicked.connect(self.maximizeRequested.emit)
         self._btn_close.clicked.connect(self.closeRequested.emit)
 
-        # initialize logo
         self.setLogoVariant(logo_variant)
+
+        if _theme_manager is not None:
+            _theme_manager.themeChanged.connect(self._on_theme_changed)
+
+    def _on_theme_changed(self, theme: str):
+        try:
+            self._apply_icon_to_button(self._btn_min, 'minimize/default.svg', theme)
+            self._apply_icon_to_button(self._btn_max, 'maximize/default.svg', theme)
+            self._apply_icon_to_button(self._btn_close, 'close/default.svg', theme)
+            if hasattr(self, '_btn_daemon'):
+                self._apply_icon_to_button(self._btn_daemon, 'daemon/default.svg', theme)
+            if hasattr(self, '_btn_tab'):
+                self._apply_icon_to_button(self._btn_tab, 'tab/default.svg', theme)
+            self.setLogoVariant('color')
+        except Exception:
+            pass
+
+    def _apply_icon_to_button(self, btn: QPushButton, rel_icon_path: str, theme: str = 'default.qss'):
+        try:
+            ico = QIcon()
+            p = None
+            if hasattr(icon_loader, 'resolve_icon_path'):
+                p = icon_loader.resolve_icon_path(self.icon_dirs, rel_icon_path)
+            if p and os.path.exists(p) and p.lower().endswith('.svg') and hasattr(icon_loader, 'recolor_svg_to_temp'):
+                try:
+                    p2 = icon_loader.recolor_svg_to_temp(p, theme=theme)
+                    if p2 and os.path.exists(p2):
+                        ico.addFile(p2)
+                except Exception:
+                    pass
+            if ico.isNull():
+                if hasattr(icon_loader, 'load_qicon'):
+                    ico = icon_loader.load_qicon(rel_icon_path, icon_dirs=self.icon_dirs)
+                elif p and os.path.exists(p):
+                    ico.addFile(p)
+            if not ico.isNull():
+                btn.setIcon(ico)
+                btn.setIconSize(QSize(18, 18))
+        except Exception:
+            pass
 
     def _make_button(self, rel_icon_path: str, tooltip: str, theme: str = "default.qss") -> QPushButton:
         btn = QPushButton(self)
@@ -108,14 +134,11 @@ class TitleBar(QWidget):
         btn.setFlat(True)
         btn.setCursor(QCursor(Qt.PointingHandCursor))
         btn.setFixedSize(28, 28)
-        # attempt to load icon
         try:
             ico = QIcon()
-            # prefer recolored svg file path and add it to QIcon so Qt treats it as a proper icon
             p = None
             if hasattr(icon_loader, 'resolve_icon_path'):
                 p = icon_loader.resolve_icon_path(self.icon_dirs, rel_icon_path)
-            # if we have a source svg path, try recolor to temp (will return original on error)
             
             if p and os.path.exists(p) and p.lower().endswith('.svg') and hasattr(icon_loader, 'recolor_svg_to_temp'):
                 try:
@@ -125,7 +148,6 @@ class TitleBar(QWidget):
                 except Exception:
                     pass
 
-            # fallback: try load_qicon or direct path
             if ico.isNull():
                 if hasattr(icon_loader, 'load_qicon'):
                     ico = icon_loader.load_qicon(rel_icon_path, icon_dirs=self.icon_dirs)
@@ -143,18 +165,14 @@ class TitleBar(QWidget):
         self._title.setText(text)
 
     def setLogoVariant(self, variant: str):
-        """Set logo variant: 'color', 'dark', 'light' -> logo-main-{variant}.svg"""
         fname = f"logo-main-{variant}.svg"
         pm = None
         try:
-            # For logo we intentionally load the original asset and do not recolor it.
-            # Try resolving the filename directly (icon_dirs may already point to branding/)
             if hasattr(icon_loader, 'resolve_icon_path'):
                 p = icon_loader.resolve_icon_path(self.icon_dirs, fname)
                 if p and os.path.exists(p):
                     pm = QPixmap(p)
                 else:
-                    # fallback to explicit branding/ prefix
                     rel = os.path.join('branding', fname)
                     p2 = icon_loader.resolve_icon_path(self.icon_dirs, rel)
                     if p2 and os.path.exists(p2):
@@ -165,7 +183,6 @@ class TitleBar(QWidget):
         if pm and not pm.isNull():
             self._logo.setPixmap(pm.scaled(self._logo.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation))
 
-    # Convenience to toggle optional buttons at runtime
     def showDaemonButton(self, show: bool):
         self._btn_daemon.setVisible(show)
 

@@ -5,15 +5,6 @@ import os
 
 
 class RemovableItemWidget(QWidget):
-    """Small widget that shows a label and a removable button.
-
-    Backwards-compatible: exposes `.label` and `.button` attributes.
-
-    This refactor makes parameters optional and ensures the label uses
-    `QSizePolicy.MinimumExpanding` by default so it behaves like the fallback
-    QLabel used in generated forms when `RemovableItemWidget` can't be loaded.
-    """
-
     removed = Signal()
 
     def __init__(self, text: str = "", parent=None, icon_path: str = None, *, expand_label: bool = True):
@@ -22,10 +13,8 @@ class RemovableItemWidget(QWidget):
         self.setProperty('variant', 'default')
         self.setProperty('state', 'normal')
 
-        # robustly handle missing/None text
         self.label = QLabel(text or "", self)
 
-        # ensure label expands like the fallback QLabel used across forms
         if expand_label:
             sp = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
             sp.setHorizontalStretch(0)
@@ -38,7 +27,6 @@ class RemovableItemWidget(QWidget):
         self.button.setProperty('variant', 'default')
         self.button.setProperty('state', 'normal')
 
-        # try to set an icon if provided and valid, otherwise use a fallback text
         icon_set = False
         if icon_path:
             try:
@@ -50,8 +38,6 @@ class RemovableItemWidget(QWidget):
                 icon_set = False
 
         if not icon_set:
-            # do not attempt to load a bundled default icon path that may not exist;
-            # show a small 'x' as a safe fallback
             self.button.setText('x')
 
         self.button.clicked.connect(self._on_remove)
@@ -64,7 +50,6 @@ class RemovableItemWidget(QWidget):
         self.setParent(None)
         self.removed.emit()
 
-    # convenience helpers that downstream code may use
     def set_text(self, text: str):
         self.label.setText(text or "")
 

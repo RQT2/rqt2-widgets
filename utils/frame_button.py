@@ -10,7 +10,6 @@ from PySide6.QtWidgets import QLabel, QFrame, QVBoxLayout, QApplication
 try:
     from .scaled_icon_label import ScaledIconLabel
 except Exception:
-    # support loading the module when executed via importlib.spec_from_file_location
     import importlib.util as _il, os as _os
     _spec = _il.spec_from_file_location("scaled_icon_label", _os.path.join(_os.path.dirname(__file__), "scaled_icon_label.py"))
     _mod = _il.module_from_spec(_spec)
@@ -25,15 +24,14 @@ except Exception:
     _mod = _il.module_from_spec(_spec)
     _spec.loader.exec_module(_mod)
     icon_loader = _mod
+try:
+    from .theme_manager import get_theme_manager
+    _theme_manager = get_theme_manager()
+except Exception:
+    _theme_manager = None
 
 
 class FrameButtonWidget(QFrame):
-    """Interactive frame that behaves like a button with icon, title and info.
-
-    Uses `ScaledIconLabel` and `icon_loader` to resolve and load icons from
-    a list of `icon_dirs` with a placeholder fallback.
-    """
-
     clicked = Signal()
 
     def __init__(self, icon_path: Optional[str] = None, title: str = "", info: str = "",
@@ -41,19 +39,14 @@ class FrameButtonWidget(QFrame):
                  apply_theme_from_palette: bool = True, theme: str = 'default.qss'):
         super().__init__(parent)
         self.setCursor(QCursor(Qt.PointingHandCursor))
-        # objectName kept for compatibility; use properties for styling (role/variant/state)
         self.setObjectName("FrameButtonWidget")
-        # role acts like a CSS class; variant can be 'primary', 'secondary', etc.
         self.setProperty('role', 'frame-button')
-        # default visual variant
         self.setProperty('variant', 'default')
-        # state: 'normal' | 'pressed' — QSS can match [state="pressed"]
         self.setProperty('state', 'normal')
         self.icon_dirs = icon_dirs or []
         self.max_size = max_size
 
         self.icon = ScaledIconLabel(max_size=self.max_size, parent=self)
-        # Use nonlinear scaling: base 96px but accelerated growth (power 2.0)
         self.icon = ScaledIconLabel(max_size=self.max_size, parent=self, base_size=128, scale_power=1.8)
         self.title = QLabel(title, parent=self)
         self.title.setProperty('role', 'title')
@@ -68,9 +61,24 @@ class FrameButtonWidget(QFrame):
         layout.addWidget(self.info, 0)
 
         if icon_path:
-            pix = self._load_pix(icon_path, theme=theme) 
+            self._icon_path = icon_path
+            pix = self._load_pix(icon_path, theme=theme)
             if pix and not pix.isNull():
                 self.icon.setPixmap(pix)
+        else:
+            self._icon_path = None
+
+        if _theme_manager is not None:
+            _theme_manager.themeChanged.connect(self._on_theme_changed)
+
+    def _on_theme_changed(self, theme: str):
+        try:
+            if getattr(self, '_icon_path', None):
+                pix = self._load_pix(self._icon_path, theme=theme)
+                if pix and not pix.isNull():
+                    self.icon.setPixmap(pix)
+        except Exception:
+            pass
 
     def enterEvent(self, event):
         super().enterEvent(event)
@@ -105,7 +113,6 @@ class FrameButtonWidget(QFrame):
     def mouseReleaseEvent(self, event):
         super().mouseReleaseEvent(event)
         try:
-            # restore state before emitting clicked to allow QSS to reflect press
             self.setProperty('state', 'normal')
             self.style().unpolish(self)
             self.style().polish(self)
@@ -125,10 +132,8 @@ class FrameButtonWidget(QFrame):
             pass
 
     def _load_pix(self, rel_path: str, theme: str = 'default.qss') -> QPixmap:
-        # Prefer explicit resolution so we can surface useful diagnostics
         base = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
 
-        # 1) Prefer icon_loader._resolve_icon (it may return recolored temp SVG)
         try:
             if hasattr(icon_loader, 'recolor_svg_to_temp'):
                 temp_svg = icon_loader.recolor_svg_to_temp(rel_path, theme=theme)
@@ -148,7 +153,6 @@ class FrameButtonWidget(QFrame):
         except Exception as e:
             print(f"[FrameButtonWidget] _resolve_icon error: {e}")
 
-        # fallback: try resolve_icon_path
         resolved = None
         try:
             if hasattr(icon_loader, 'resolve_icon_path'):
@@ -167,7 +171,6 @@ class FrameButtonWidget(QFrame):
         except Exception as e:
             print(f"[FrameButtonWidget] resolve_icon_path error: {e}")
 
-        # 2) Try icon_loader.load_qpixmap which may handle SVG/QIcon internals
         try:
             pix = icon_loader.load_qpixmap(rel_path, icon_dirs=self.icon_dirs)
             if pix and not pix.isNull():
@@ -175,11 +178,9 @@ class FrameButtonWidget(QFrame):
         except Exception as e:
             print(f"[FrameButtonWidget] load_qpixmap error: {e}")
 
-        # 3) If rel_path is absolute, try it directly
         if os.path.isabs(rel_path) and os.path.exists(rel_path):
             return QPixmap(rel_path)
 
-        # 4) Try several plausible candidates relative to known locations
         candidates = [
             os.path.normpath(os.path.join(base, 'icons', rel_path)),
             os.path.normpath(os.path.join(base, '..', 'rqt2_components', 'assets', 'branding', rel_path)),
@@ -193,13 +194,11 @@ class FrameButtonWidget(QFrame):
                 except Exception:
                     pass
 
-        # 5) Fallback to package placeholder if present
         placeholder = os.path.join(base, 'icons', 'placeholder.svg')
         if os.path.exists(placeholder):
             print(f"[FrameButtonWidget] icon not found: {rel_path!r}. Using placeholder. Candidates checked: {candidates}")
             return QPixmap(placeholder)
 
-        # 6) Nothing found — emit diagnostic and return empty pixmap
         print(f"[FrameButtonWidget] icon not found: {rel_path!r}. Candidates checked: {candidates}")
         return QPixmap()
 

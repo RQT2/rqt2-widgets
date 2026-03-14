@@ -4,8 +4,6 @@ from PySide6.QtGui import QCursor
 
 
 class NavButton(QPushButton):
-    """Botón de navegación que emite la ruta/target al ser pulsado."""
-
     navigate = Signal(str)
 
     def __init__(self, label: str = "", target: str = "", parent=None):

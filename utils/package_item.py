@@ -1,13 +1,8 @@
-from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QHBoxLayout
-from PySide6.QtCore import Signal
-
+from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QHBoxLayoutm, QSizePolicy
+from PySide6.QtCore import Qt, Signal
+from PySide6.QtGui import QCursor
 
 class PackageItemWidget(QWidget):
-    """Widget reutilizable para un elemento del gestor de paquetes.
-
-    Emite `install_requested` con el nombre del paquete cuando se pulsa el botón.
-    """
-
     install_requested = Signal(str)
 
     def __init__(self, name: str = "", link: str = "", parent=None):
@@ -41,15 +36,6 @@ class PackageItemWidget(QWidget):
 
 
 def add_package_row(grid_layout, grid_row: int, idx: int, name: str, link: str, button_text: str = "Instalar", parent=None):
-    """Helper to insert a package row into a QGridLayout.
-
-    Places widgets in columns: 0=name, 1=links, 3=action button.
-    Returns the created (label_name, label_link, button) tuple so caller
-    can connect signals.
-    """
-    from PySide6.QtWidgets import QLabel, QPushButton, QSizePolicy
-    from PySide6.QtCore import Qt
-    from PySide6.QtGui import QCursor
 
     lbl_name = QLabel(parent)
     lbl_name.setObjectName(f"PKGName{idx}")
@@ -67,7 +53,6 @@ def add_package_row(grid_layout, grid_row: int, idx: int, name: str, link: str, 
     btn.setObjectName(f"BUTTONInstall{idx}")
     btn.setText(button_text)
 
-    # add to grid: (grid_row, 0) name, (grid_row,1) links, (grid_row,3) action
     grid_layout.addWidget(lbl_name, grid_row, 0, 1, 1)
     grid_layout.addWidget(lbl_link, grid_row, 1, 1, 1)
     grid_layout.addWidget(btn, grid_row, 3, 1, 1)

@@ -1,10 +1,11 @@
 import os
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QFrame, QSizePolicy
-from PySide6.QtCore import Qt, QEvent
+from PySide6.QtCore import Qt, QEvent, Signal
 
 from .titlebar import TitleBar
 
 class DemoWindow(QWidget):
+    uiReinitialized = Signal()
     def __init__(self, ui_class, title: str = None, icon_dirs: list = None, parent=None, 
                  logo_variant: str = "color", show_daemon: bool = False, 
                  show_tab: bool = False, theme: str = "default.qss"):
@@ -42,6 +43,18 @@ class DemoWindow(QWidget):
             self.ui.setupUi(self.content, icon_dirs=icon_dirs, theme=theme)
         except TypeError:
             self.ui.setupUi(self.content)
+
+        self._ui_class = ui_class
+        self._initial_icon_dirs = icon_dirs
+        self._initial_theme = theme
+
+        try:
+            from .theme_manager import get_theme_manager
+            tm = get_theme_manager()
+            if tm is not None:
+                tm.themeChanged.connect(self._on_theme_changed)
+        except Exception:
+            pass
 
         container_layout.addWidget(self.titlebar)
         container_layout.addWidget(self.content)
@@ -132,3 +145,18 @@ class DemoWindow(QWidget):
             self.main_container.style().unpolish(self.main_container)
             self.main_container.style().polish(self.main_container)
         super().changeEvent(event)
+
+    def _on_theme_changed(self, theme: str):
+        try:
+            try:
+                self.ui.setupUi(self.content, icon_dirs=self._initial_icon_dirs, theme=theme)
+            except TypeError:
+                self.ui.setupUi(self.content)
+            self.main_container.style().unpolish(self.main_container)
+            self.main_container.style().polish(self.main_container)
+            try:
+                self.uiReinitialized.emit()
+            except Exception:
+                pass
+        except Exception:
+            pass
