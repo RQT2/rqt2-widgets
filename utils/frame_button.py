@@ -29,6 +29,15 @@ try:
     _theme_manager = get_theme_manager()
 except Exception:
     _theme_manager = None
+    try:
+        from rqt2_widgets.utils.theme_manager import get_theme_manager as _gm
+        _theme_manager = _gm()
+    except Exception:
+        try:
+            from external.rqt2_widgets.utils.theme_manager import get_theme_manager as _gm2
+            _theme_manager = _gm2()
+        except Exception:
+            _theme_manager = None
 
 
 class FrameButtonWidget(QFrame):
