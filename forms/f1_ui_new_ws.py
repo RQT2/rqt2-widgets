@@ -193,7 +193,7 @@ class Ui_Widget(object):
 
         self.TABPKGNew = QTabWidget(Widget)
         self.TABPKGNew.setObjectName(u"TABPKGNew")
-        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Fixed)
+        sizePolicy4 = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy4.setHorizontalStretch(0)
         sizePolicy4.setVerticalStretch(0)
         sizePolicy4.setHeightForWidth(self.TABPKGNew.sizePolicy().hasHeightForWidth())
@@ -468,23 +468,6 @@ class Ui_Widget(object):
 
         self.horizontalLayout_12.addWidget(self.EDITPKGDir)
 
-        self.BTNPKGDir = QPushButton(self.GROUPConf)
-        self.BTNPKGDir.setObjectName(u"BTNPKGDir")
-        self.BTNPKGDir.setEnabled(True)
-        sizePolicy10 = QSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-        sizePolicy10.setHorizontalStretch(0)
-        sizePolicy10.setVerticalStretch(0)
-        sizePolicy10.setHeightForWidth(self.BTNPKGDir.sizePolicy().hasHeightForWidth())
-        self.BTNPKGDir.setSizePolicy(sizePolicy10)
-        self.BTNPKGDir.setMaximumSize(QSize(16777215, 16777215))
-        icon2 = QIcon()
-        icon2_path = _resolve_icon(icon_dirs, os.path.join('folder', 'default.svg'), theme=self.theme)
-        icon2.addFile(icon2_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        self.BTNPKGDir.setIcon(icon2)
-        self.BTNPKGDir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-
-        self.horizontalLayout_12.addWidget(self.BTNPKGDir)
-
 
         self.verticalLayout_8.addLayout(self.horizontalLayout_12)
 
@@ -492,8 +475,8 @@ class Ui_Widget(object):
         self.horizontalLayout_13.setObjectName(u"horizontalLayout_13")
         self.LABELPKGApts = QLabel(self.GROUPConf)
         self.LABELPKGApts.setObjectName(u"LABELPKGApts")
-        sizePolicy1.setHeightForWidth(self.LABELPKGApts.sizePolicy().hasHeightForWidth())
-        self.LABELPKGApts.setSizePolicy(sizePolicy1)
+        sizePolicy6.setHeightForWidth(self.LABELPKGApts.sizePolicy().hasHeightForWidth())
+        self.LABELPKGApts.setSizePolicy(sizePolicy6)
         self.LABELPKGApts.setAlignment(Qt.AlignmentFlag.AlignLeading|Qt.AlignmentFlag.AlignLeft|Qt.AlignmentFlag.AlignTop)
         self.LABELPKGApts.setWordWrap(True)
 
@@ -506,76 +489,7 @@ class Ui_Widget(object):
         self.EDITPKGApts = QLineEdit(self.GROUPConf)
         self.EDITPKGApts.setObjectName(u"EDITPKGApts")
 
-        self.horizontalLayout_14.addWidget(self.EDITPKGApts)
-
-        self.BTNPKGApts = QPushButton(self.GROUPConf)
-        self.BTNPKGApts.setObjectName(u"BTNPKGApts")
-        self.BTNPKGApts.setIcon(icon1)
-        self.BTNPKGApts.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-
-        self.horizontalLayout_14.addWidget(self.BTNPKGApts)
-
-
-        self.verticalLayout_7.addLayout(self.horizontalLayout_14)
-
-        self.FRAMEPKGAdded = QFrame(self.GROUPConf)
-        self.FRAMEPKGAdded.setObjectName(u"FRAMEPKGAdded")
-        self.FRAMEPKGAdded.setFrameShape(QFrame.Shape.Box)
-        self.FRAMEPKGAdded.setFrameShadow(QFrame.Shadow.Raised)
-        self.verticalLayout_14 = QVBoxLayout(self.FRAMEPKGAdded)
-        self.verticalLayout_14.setObjectName(u"verticalLayout_14")
-        # try to use RemovableItemWidget for added packages
-        sizePolicy11 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Preferred)
-        try:
-            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
-            spec = importlib.util.spec_from_file_location('removable_item', utils_path)
-            rem_mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(rem_mod)
-            RemovableItemWidget = rem_mod.RemovableItemWidget
-
-            self.LAYOUTPKGAdded = QHBoxLayout()
-            self.LAYOUTPKGAdded.setObjectName(u"LAYOUTPKGAdded")
-            """
-            sample = RemovableItemWidget(text="rlcpp", parent=self.FRAMEPKGAdded, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg'), theme=theme))
-            self.LABELPKGAdded = sample.label
-            self.BTNPKGAdded = sample.button
-            self.LAYOUTPKGAdded.addWidget(sample)
-            self.verticalLayout_14.addLayout(self.LAYOUTPKGAdded)
-            """
-        except Exception:
-            self.LAYOUTPKGAdded = QHBoxLayout()
-            self.LAYOUTPKGAdded.setObjectName(u"LAYOUTPKGAdded")
-            self.LABELPKGAdded = QLabel(self.FRAMEPKGAdded)
-            self.LABELPKGAdded.setObjectName(u"LABELPKGAdded")
-            sizePolicy11.setHorizontalStretch(0)
-            sizePolicy11.setVerticalStretch(0)
-            sizePolicy11.setHeightForWidth(self.LABELPKGAdded.sizePolicy().hasHeightForWidth())
-            self.LABELPKGAdded.setSizePolicy(sizePolicy11)
-
-            self.LAYOUTPKGAdded.addWidget(self.LABELPKGAdded)
-
-            self.BTNPKGAdded = QPushButton(self.FRAMEPKGAdded)
-            self.BTNPKGAdded.setObjectName(u"BTNPKGAdded")
-            icon3 = QIcon()
-            icon3_path = _resolve_icon(icon_dirs, os.path.join('close', 'default.svg'), theme=self.theme)
-            icon3.addFile(icon3_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-            self.BTNPKGAdded.setIcon(icon3)
-            self.BTNPKGAdded.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
-
-            self.LAYOUTPKGAdded.addWidget(self.BTNPKGAdded)
-
-            self.verticalLayout_14.addLayout(self.LAYOUTPKGAdded)
-
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_14.addItem(self.verticalSpacer)
-
-
-        self.verticalLayout_7.addWidget(self.FRAMEPKGAdded)
-
-
-        self.horizontalLayout_13.addLayout(self.verticalLayout_7)
-
+        self.horizontalLayout_13.addWidget(self.EDITPKGApts)
 
         self.verticalLayout_8.addLayout(self.horizontalLayout_13)
 
@@ -591,7 +505,7 @@ class Ui_Widget(object):
         self.horizontalLayout_26.setSizeConstraint(QLayout.SizeConstraint.SetMinimumSize)
         self.GROUPNode = QGroupBox(self.TAB_my_pkg)
         self.GROUPNode.setObjectName(u"GROUPNode")
-        sizePolicy12 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy12 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding)
         sizePolicy12.setHorizontalStretch(0)
         sizePolicy12.setVerticalStretch(0)
         sizePolicy12.setHeightForWidth(self.GROUPNode.sizePolicy().hasHeightForWidth())
@@ -634,12 +548,17 @@ class Ui_Widget(object):
 
         self.FRAMENODEAdded = QScrollArea(self.GROUPNode)
         self.FRAMENODEAdded.setObjectName(u"FRAMENODEAdded")
-        sizePolicy.setHeightForWidth(self.FRAMENODEAdded.sizePolicy().hasHeightForWidth())
-        self.FRAMENODEAdded.setSizePolicy(sizePolicy)
+        sizePolicy4.setHeightForWidth(self.FRAMENODEAdded.sizePolicy().hasHeightForWidth())
+        self.FRAMENODEAdded.setSizePolicy(sizePolicy4)
         self.FRAMENODEAdded.setWidgetResizable(True)
         self.scrollAreaWidgetContents_2 = QWidget()
         self.scrollAreaWidgetContents_2.setObjectName(u"scrollAreaWidgetContents_2")
-        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 340, 92))
+        self.scrollAreaWidgetContents_2.setGeometry(QRect(0, 0, 340, 101))
+        sizePolicy12 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.MinimumExpanding)
+        sizePolicy12.setHorizontalStretch(0)
+        sizePolicy12.setVerticalStretch(0)
+        sizePolicy12.setHeightForWidth(self.scrollAreaWidgetContents_2.sizePolicy().hasHeightForWidth())
+        self.scrollAreaWidgetContents_2.setSizePolicy(sizePolicy12)
         self.verticalLayout_16 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_16.setObjectName(u"verticalLayout_16")
         self.FRAMENODEAdded.setProperty('role', 'node-list')
@@ -735,12 +654,14 @@ class Ui_Widget(object):
 
         self.FRAMELAUNCHAdd = QScrollArea(self.GROUPLaunch)
         self.FRAMELAUNCHAdd.setObjectName(u"FRAMELAUNCHAdd")
-        sizePolicy.setHeightForWidth(self.FRAMELAUNCHAdd.sizePolicy().hasHeightForWidth())
-        self.FRAMELAUNCHAdd.setSizePolicy(sizePolicy)
+        sizePolicy4.setHeightForWidth(self.FRAMELAUNCHAdd.sizePolicy().hasHeightForWidth())
+        self.FRAMELAUNCHAdd.setSizePolicy(sizePolicy4)
         self.FRAMELAUNCHAdd.setWidgetResizable(True)
         self.scrollAreaWidgetContents_3 = QWidget()
         self.scrollAreaWidgetContents_3.setObjectName(u"scrollAreaWidgetContents_3")
-        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 340, 92))
+        self.scrollAreaWidgetContents_3.setGeometry(QRect(0, 0, 340, 101))
+        sizePolicy12.setHeightForWidth(self.scrollAreaWidgetContents_3.sizePolicy().hasHeightForWidth())
+        self.scrollAreaWidgetContents_3.setSizePolicy(sizePolicy12)
         self.verticalLayout_13 = QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_13.setObjectName(u"verticalLayout_13")
         self.FRAMELAUNCHAdd.setProperty('role', 'node-list')
@@ -802,10 +723,6 @@ class Ui_Widget(object):
         #self.TABPKGNew.addTab(self.TAB_my_pkg, "")
 
         self.verticalLayout_17.addWidget(self.TABPKGNew)
-
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_17.addItem(self.verticalSpacer_4)
 
         self.horizontalLayout_19 = QHBoxLayout()
         self.horizontalLayout_19.setObjectName(u"horizontalLayout_19")
@@ -904,7 +821,7 @@ class Ui_Widget(object):
         self.LABELPKGDir.setText(QCoreApplication.translate("Widget", u"Ubicaci\u00f3n de instalaci\u00f3n", None))
         self.EDITPKGDir.setPlaceholderText(QCoreApplication.translate("Widget", u"ros2_ws/src/", None))
         self.LABELPKGApts.setText(QCoreApplication.translate("Widget", u"Dependencias:", None))
-        #self.LABELPKGAdded.setText(QCoreApplication.translate("Widget", u"rlcpp", None))
+        self.EDITPKGApts.setPlaceholderText(QCoreApplication.translate("Widget", u"separados por espacios", None))
         self.GROUPNode.setTitle(QCoreApplication.translate("Widget", u"Nodos", None))
         self.CBNODENew.setItemText(0, QCoreApplication.translate("Widget", u".py", None))
         self.CBNODENew.setItemText(1, QCoreApplication.translate("Widget", u".cpp", None))
