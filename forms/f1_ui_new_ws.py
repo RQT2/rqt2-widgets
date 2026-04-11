@@ -561,6 +561,8 @@ class Ui_Widget(object):
         self.scrollAreaWidgetContents_2.setSizePolicy(sizePolicy12)
         self.verticalLayout_16 = QVBoxLayout(self.scrollAreaWidgetContents_2)
         self.verticalLayout_16.setObjectName(u"verticalLayout_16")
+        self.verticalLayout_16.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_16.setSpacing(0)
         self.FRAMENODEAdded.setProperty('role', 'node-list')
         self.FRAMENODEAdded.setProperty('variant', 'default')
         self.FRAMENODEAdded.setProperty('state', 'normal')
@@ -664,6 +666,8 @@ class Ui_Widget(object):
         self.scrollAreaWidgetContents_3.setSizePolicy(sizePolicy12)
         self.verticalLayout_13 = QVBoxLayout(self.scrollAreaWidgetContents_3)
         self.verticalLayout_13.setObjectName(u"verticalLayout_13")
+        self.verticalLayout_13.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_13.setSpacing(0)
         self.FRAMELAUNCHAdd.setProperty('role', 'node-list')
         self.FRAMELAUNCHAdd.setProperty('variant', 'default')
         self.FRAMELAUNCHAdd.setProperty('state', 'normal')
@@ -883,6 +887,13 @@ class Ui_Widget(object):
             target_layout = getattr(self, 'verticalLayout_16', None)
             node_container = getattr(self, 'scrollAreaWidgetContents_2', None)
 
+        try:
+            if target_layout is not None:
+                target_layout.setContentsMargins(0, 0, 0, 0)
+                target_layout.setSpacing(0)
+        except Exception:
+            pass
+
         raw = (edit_widget.text() if edit_widget is not None else '') or ''
         ext = (combo_widget.currentText() if combo_widget is not None else '') or ''
 
@@ -979,6 +990,13 @@ class Ui_Widget(object):
         if target_layout is None:
             target_layout = getattr(self, 'verticalLayout_13', None)
             launch_container = getattr(self, 'scrollAreaWidgetContents_3', None)
+
+        try:
+            if target_layout is not None:
+                target_layout.setContentsMargins(0, 0, 0, 0)
+                target_layout.setSpacing(0)
+        except Exception:
+            pass
 
         raw = (edit_widget.text() if edit_widget is not None else '') or ''
         ext = (combo_widget.currentText() if combo_widget is not None else '') or ''
