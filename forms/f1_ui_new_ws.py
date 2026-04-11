@@ -114,8 +114,6 @@ class Ui_Widget(object):
 
         self.horizontalLayout_10.addWidget(self.LABELWSNew)
 
-        self.verticalLayout_9 = QVBoxLayout()
-        self.verticalLayout_9.setObjectName(u"verticalLayout_9")
         self.EDITWSNew = QLineEdit(Widget)
         self.EDITWSNew.setObjectName(u"EDITWSNew")
         sizePolicy2 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
@@ -125,24 +123,40 @@ class Ui_Widget(object):
         self.EDITWSNew.setSizePolicy(sizePolicy2)
         self.EDITWSNew.setClearButtonEnabled(False)
 
-        self.verticalLayout_9.addWidget(self.EDITWSNew)
-
-
-        self.horizontalLayout_10.addLayout(self.verticalLayout_9)
+        self.horizontalLayout_10.addWidget(self.EDITWSNew)
         
+        self.LABELDir = QLabel(Widget)
+        self.LABELDir.setObjectName(u"LABELDir")
+        sizePolicy13 = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Minimum)
+        sizePolicy13.setHorizontalStretch(0)
+        sizePolicy13.setVerticalStretch(0)
+        sizePolicy13.setHeightForWidth(self.LABELDir.sizePolicy().hasHeightForWidth())
+        self.LABELDir.setSizePolicy(sizePolicy13)
+
+        self.EDITDir = QLineEdit(Widget)
+        self.EDITDir.setObjectName(u"EDITDir")
+        sizePolicy14 = QSizePolicy(QSizePolicy.Policy.MinimumExpanding, QSizePolicy.Policy.Fixed)
+        sizePolicy14.setHorizontalStretch(0)
+        sizePolicy14.setVerticalStretch(0)
+        sizePolicy14.setHeightForWidth(self.EDITDir.sizePolicy().hasHeightForWidth())
+        self.EDITDir.setSizePolicy(sizePolicy14)
+
         self.BTNDir = QPushButton(Widget)
         self.BTNDir.setObjectName(u"BTNDir")
-        
         icon1 = QIcon()
         icon1_path = _resolve_icon(icon_dirs, os.path.join('folder', 'default.svg'), theme=theme)
         icon1.addFile(icon1_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
-        
         self.BTNDir.setIcon(icon1)
         self.BTNDir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) 
         
-        self.horizontalLayout_10.addWidget(self.BTNDir)
+        self.horizontalLayout_9 = QHBoxLayout()
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.horizontalLayout_9.addWidget(self.LABELDir)
+        self.horizontalLayout_9.addWidget(self.EDITDir)
+        self.horizontalLayout_9.addWidget(self.BTNDir)
 
 
+        self.verticalLayout_17.addLayout(self.horizontalLayout_9)
         self.verticalLayout_17.addLayout(self.horizontalLayout_10)
 
         self.horizontalLayout_8 = QHBoxLayout()
@@ -154,7 +168,6 @@ class Ui_Widget(object):
         sizePolicy3.setVerticalStretch(0)
         sizePolicy3.setHeightForWidth(self.LABELPKGNew.sizePolicy().hasHeightForWidth())
         self.LABELPKGNew.setSizePolicy(sizePolicy3)
-        self.LABELPKGNew.setWordWrap(True)
 
         self.horizontalLayout_8.addWidget(self.LABELPKGNew)
 
@@ -906,6 +919,8 @@ class Ui_Widget(object):
         self.TABPKGNew.setTabText(self.TABPKGNew.indexOf(self.TAB_my_pkg), QCoreApplication.translate("Widget", u"my_pkg", None))
         self.BTNMake.setText(QCoreApplication.translate("Widget", u"Crear", None))
         self.BTNCancell.setText(QCoreApplication.translate("Widget", u"Cancelar", None))
+        self.LABELDir.setText(QCoreApplication.translate("Widget", u"Ubicaci\u00f3n del nuevo paquete", None))
+        self.EDITDir.setPlaceholderText(QCoreApplication.translate("Widget", u"~/", None))
     # retranslateUi
 
     def _remove_item(self, widget, parent_layout):
