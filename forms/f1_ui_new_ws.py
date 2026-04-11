@@ -129,6 +129,18 @@ class Ui_Widget(object):
 
 
         self.horizontalLayout_10.addLayout(self.verticalLayout_9)
+        
+        self.BTNDir = QPushButton(Widget)
+        self.BTNDir.setObjectName(u"BTNDir")
+        
+        icon1 = QIcon()
+        icon1_path = _resolve_icon(icon_dirs, os.path.join('folder', 'default.svg'), theme=theme)
+        icon1.addFile(icon1_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
+        
+        self.BTNDir.setIcon(icon1)
+        self.BTNDir.setCursor(QCursor(Qt.CursorShape.PointingHandCursor)) 
+        
+        self.horizontalLayout_10.addWidget(self.BTNDir)
 
 
         self.verticalLayout_17.addLayout(self.horizontalLayout_10)
