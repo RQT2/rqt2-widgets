@@ -15,7 +15,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QDoubleSpinBox, QFrame,
+from PySide6.QtWidgets import (QApplication, QComboBox, QFrame,
     QGroupBox, QHBoxLayout, QLabel, QLayout,
     QLineEdit, QPushButton, QScrollArea, QSizePolicy,
     QSpacerItem, QTabWidget, QVBoxLayout, QWidget)
@@ -366,39 +366,30 @@ class Ui_Widget(object):
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
         self.horizontalLayout_6 = QHBoxLayout()
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
-        self.LABELXMLVer = QLabel(self.frame_2)
-        self.LABELXMLVer.setObjectName(u"LABELXMLVer")
-        sizePolicy3.setHeightForWidth(self.LABELXMLVer.sizePolicy().hasHeightForWidth())
-        self.LABELXMLVer.setSizePolicy(sizePolicy3)
-        self.LABELXMLVer.setWordWrap(True)
+        self.LABELProjectVer = QLabel(self.frame_2)
+        self.LABELProjectVer.setObjectName(u"LABELProjectVer")
+        sizePolicy3.setHeightForWidth(self.LABELProjectVer.sizePolicy().hasHeightForWidth())
+        self.LABELProjectVer.setSizePolicy(sizePolicy3)
+        self.LABELProjectVer.setWordWrap(True)
 
-        self.horizontalLayout_6.addWidget(self.LABELXMLVer)
+        self.horizontalLayout_6.addWidget(self.LABELProjectVer)
 
-        self.SPINXMLVer = QDoubleSpinBox(self.frame_2)
-        self.SPINXMLVer.setObjectName(u"SPINXMLVer")
-        self.SPINXMLVer.setDecimals(1)
-        self.SPINXMLVer.setSingleStep(0.100000000000000)
-        self.SPINXMLVer.setValue(1.000000000000000)
-        if not arrow_down_icon.isNull() and not arrow_up_icon.isNull():
-            self.SPINXMLVer.setStyleSheet(f"""
-                QDoubleSpinBox::down-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'down.svg'))}); }}
-                QDoubleSpinBox::up-arrow {{ image: url({_resolve_icon(icon_dirs, os.path.join('arrows', 'up.svg'))}); }}
-            """)
-        self.SPINXMLVer.setCursor(QCursor(Qt.CursorShape.PointingHandCursor))
+        self.EDITProjectVer = QLineEdit(self.frame_2)
+        self.EDITProjectVer.setObjectName(u"EDITProjectVer")
 
-        self.horizontalLayout_6.addWidget(self.SPINXMLVer)
+        self.horizontalLayout_6.addWidget(self.EDITProjectVer)
 
 
         self.verticalLayout_6.addLayout(self.horizontalLayout_6)
 
-        self.INFOXMLVer = QLabel(self.frame_2)
-        self.INFOXMLVer.setObjectName(u"INFOXMLVer")
-        sizePolicy3.setHeightForWidth(self.INFOXMLVer.sizePolicy().hasHeightForWidth())
-        self.INFOXMLVer.setSizePolicy(sizePolicy3)
-        self.INFOXMLVer.setFont(font)
-        self.INFOXMLVer.setWordWrap(True)
+        self.INFOProjectVer = QLabel(self.frame_2)
+        self.INFOProjectVer.setObjectName(u"INFOProjectVer")
+        sizePolicy3.setHeightForWidth(self.INFOProjectVer.sizePolicy().hasHeightForWidth())
+        self.INFOProjectVer.setSizePolicy(sizePolicy3)
+        self.INFOProjectVer.setFont(font)
+        self.INFOProjectVer.setWordWrap(True)
 
-        self.verticalLayout_6.addWidget(self.INFOXMLVer)
+        self.verticalLayout_6.addWidget(self.INFOProjectVer)
 
 
         self.horizontalLayout_5.addWidget(self.frame_2)
@@ -816,8 +807,9 @@ class Ui_Widget(object):
         self.CBPKGAment.setItemText(1, QCoreApplication.translate("Widget", u"CMake [ament_cmake]", None))
 
         self.INFOPKGAment.setText(QCoreApplication.translate("Widget", u"Sistema de compilaci\u00f3n del nuevo paquete.", None))
-        self.LABELXMLVer.setText(QCoreApplication.translate("Widget", u"XML Format versi\u00f3n:", None))
-        self.INFOXMLVer.setText(QCoreApplication.translate("Widget", u"Versi\u00f3n de XML para el archivo package.xml generado para el nuevo paquete de ROS2.", None))
+        self.LABELProjectVer.setText(QCoreApplication.translate("Widget", u"Versi\u00f3n del proyecto:", None))
+        self.EDITProjectVer.setPlaceholderText(QCoreApplication.translate("Widget", u"0.0.0", None))
+        self.INFOProjectVer.setText(QCoreApplication.translate("Widget", u"Versi\u00f3n del nuevo proyecto/paquete (por ejemplo, alpha, 1.0.0, A).", None))
         self.GROUPMainteiner.setTitle(QCoreApplication.translate("Widget", u"Sobre el responsable del paquete", None))
         self.LABELMAINTName.setText(QCoreApplication.translate("Widget", u"Nombre: ", None))
         self.LABELMAINTEmail.setText(QCoreApplication.translate("Widget", u"Correo:", None))
