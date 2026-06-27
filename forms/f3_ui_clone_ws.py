@@ -18,49 +18,18 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
     QVBoxLayout, QWidget)
-import importlib.util
 import os
 
-# load icon helper from utils/icon_loader if available
-load_qicon = None
-load_qpixmap = None
-placeholder = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'icons', 'placeholder.svg'))
 try:
-    _il_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'icon_loader.py'))
-    spec = importlib.util.spec_from_file_location('icon_loader', _il_path)
-    _il = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(_il)
-    load_qicon = _il.load_qicon
-    load_qpixmap = _il.load_qpixmap
-    _resolve_icon = _il._resolve_icon
-except Exception:
-    def load_qicon(rel_path, icon_dirs=None, fallback=None):
-        ico = QIcon()
-        try:
-            ico.addFile(rel_path)
-        except Exception:
-            pass
-        return ico
+    from ..utils.icon_loader import load_qicon, load_qpixmap, _resolve_icon
+except (ImportError, ValueError):
+    import sys
+    _parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if _parent not in sys.path:
+        sys.path.insert(0, _parent)
+    from utils.icon_loader import load_qicon, load_qpixmap, _resolve_icon
 
-    def load_qpixmap(rel_path, icon_dirs=None, fallback=None):
-        pix = QPixmap()
-        try:
-            pix.load(rel_path)
-        except Exception:
-            pass
-        return pix
-
-    def _resolve_icon(icon_dirs, rel_path):
-        if not icon_dirs:
-            return rel_path
-        if isinstance(icon_dirs, (list, tuple)):
-            for base in icon_dirs:
-                cand = os.path.normpath(os.path.join(base, rel_path))
-                if os.path.exists(cand):
-                    return cand
-            return rel_path
-        else:
-            return os.path.normpath(os.path.join(icon_dirs, rel_path))
+placeholder = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'icons', 'placeholder.svg'))
 
 class Ui_Widget(object):
     def setupUi(self, Widget, icon_dirs=None, theme: str = 'default.qss'):

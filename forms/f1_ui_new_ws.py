@@ -19,71 +19,23 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QFrame,
     QGroupBox, QHBoxLayout, QLabel, QLayout,
     QLineEdit, QPushButton, QScrollArea, QSizePolicy,
     QSpacerItem, QTabWidget, QVBoxLayout, QWidget)
-import importlib.util
 import os
 import re
 
-# try to import sanitize helper from utils/name_utils
-sanitize_item_name = None
 try:
-    _nu_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'name_utils.py'))
-    spec_nu = importlib.util.spec_from_file_location('name_utils', _nu_path)
-    _nu = importlib.util.module_from_spec(spec_nu)
-    spec_nu.loader.exec_module(_nu)
-    sanitize_item_name = _nu.sanitize_item_name
-except Exception:
-    def sanitize_item_name(raw: str, ext: str = "", default_base: str = "new_item") -> str:
-        # fallback: minimal inline behavior (keeps compatibility)
-        s = (raw or '').strip().replace(' ', '_')
-        s = re.sub(r'[^A-Za-z0-9._-]', '', s).lower().rstrip('.')
-        if not s:
-            s = default_base
-        if not s[0].isalpha():
-            s = 'a' + s
-        if ext and not s.endswith(ext):
-            return s + ext
-        return s
+    from ..utils.icon_loader import load_qicon, load_qpixmap, _resolve_icon
+    from ..utils.name_utils import sanitize_item_name
+    from ..utils.removable_item import RemovableItemWidget
+except (ImportError, ValueError):
+    import sys
+    _parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if _parent not in sys.path:
+        sys.path.insert(0, _parent)
+    from utils.icon_loader import load_qicon, load_qpixmap, _resolve_icon
+    from utils.name_utils import sanitize_item_name
+    from utils.removable_item import RemovableItemWidget
 
-# load icon helper from utils/icon_loader if available
-load_qicon = None
-load_qpixmap = None
 placeholder = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'icons', 'placeholder.svg'))
-try:
-    _il_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'icon_loader.py'))
-    spec = importlib.util.spec_from_file_location('icon_loader', _il_path)
-    _il = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(_il)
-    load_qicon = _il.load_qicon
-    load_qpixmap = _il.load_qpixmap
-    _resolve_icon = _il._resolve_icon
-except Exception:
-    def load_qicon(rel_path, icon_dirs=None, fallback=None):
-        ico = QIcon()
-        try:
-            ico.addFile(rel_path)
-        except Exception:
-            pass
-        return ico
-
-    def load_qpixmap(rel_path, icon_dirs=None, fallback=None):
-        pix = QPixmap()
-        try:
-            pix.load(rel_path)
-        except Exception:
-            pass
-        return pix
-
-    def _resolve_icon(icon_dirs, rel_path):
-        if not icon_dirs:
-            return rel_path
-        if isinstance(icon_dirs, (list, tuple)):
-            for base in icon_dirs:
-                cand = os.path.normpath(os.path.join(base, rel_path))
-                if os.path.exists(cand):
-                    return cand
-            return rel_path
-        else:
-            return os.path.normpath(os.path.join(icon_dirs, rel_path))
 
 class Ui_Widget(object):
     def setupUi(self, Widget, icon_dirs=None, theme: str = 'default.qss'):
@@ -562,21 +514,8 @@ class Ui_Widget(object):
         self.scrollAreaWidgetContents_2.setProperty('state', 'normal')
         # try RemovableItemWidget for node entries
         try:
-            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
-            spec = importlib.util.spec_from_file_location('removable_item', utils_path)
-            rem_mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(rem_mod)
-            RemovableItemWidget = rem_mod.RemovableItemWidget
-
             self.LAYOUTNODEAdded = QHBoxLayout()
             self.LAYOUTNODEAdded.setObjectName(u"LAYOUTNODEAdded")
-            """
-            sample = RemovableItemWidget(text="my_node.py", parent=self.scrollAreaWidgetContents_2, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg'), theme=theme))
-            self.LABELNODEAdded = sample.label
-            self.BTNNODEAdded = sample.button
-            self.LAYOUTNODEAdded.addWidget(sample)
-            self.verticalLayout_16.addLayout(self.LAYOUTNODEAdded)
-            """
         except Exception:
             self.LAYOUTNODEAdded = QHBoxLayout()
             self.LAYOUTNODEAdded.setObjectName(u"LAYOUTNODEAdded")
@@ -667,21 +606,8 @@ class Ui_Widget(object):
         self.scrollAreaWidgetContents_3.setProperty('state', 'normal')
         # try RemovableItemWidget for launch entries
         try:
-            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
-            spec = importlib.util.spec_from_file_location('removable_item', utils_path)
-            rem_mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(rem_mod)
-            RemovableItemWidget = rem_mod.RemovableItemWidget
-
             self.LAYOUTLAUNCHAdded = QHBoxLayout()
             self.LAYOUTLAUNCHAdded.setObjectName(u"LAYOUTLAUNCHAdded")
-            """
-            sample = RemovableItemWidget(text="my_launcher.python.py", parent=self.scrollAreaWidgetContents_3, icon_path=_resolve_icon(icon_dirs, os.path.join('close', 'default.svg'), theme=theme))
-            self.LABELLAUNCHAdded = sample.label
-            self.BTNLAUNCHAdded = sample.button
-            self.LAYOUTLAUNCHAdded.addWidget(sample)
-            """
-            self.verticalLayout_13.addLayout(self.LAYOUTLAUNCHAdded)
         except Exception:
             self.LAYOUTLAUNCHAdded = QHBoxLayout()
             self.LAYOUTLAUNCHAdded.setObjectName(u"LAYOUTLAUNCHAdded")
@@ -919,11 +845,6 @@ class Ui_Widget(object):
 
         # attempt to create a RemovableItemWidget
         try:
-            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
-            spec = importlib.util.spec_from_file_location('removable_item', utils_path)
-            rem_mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(rem_mod)
-            RemovableItemWidget = rem_mod.RemovableItemWidget
 
             widget = RemovableItemWidget(text=name, parent=(node_container or self.scrollAreaWidgetContents_2),
                                          icon_path=_resolve_icon(self._icon_dirs, os.path.join('close', 'default.svg'), theme=self.theme))
@@ -1022,11 +943,6 @@ class Ui_Widget(object):
             return
 
         try:
-            utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'utils', 'removable_item.py'))
-            spec = importlib.util.spec_from_file_location('removable_item', utils_path)
-            rem_mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(rem_mod)
-            RemovableItemWidget = rem_mod.RemovableItemWidget
 
             widget = RemovableItemWidget(text=name, parent=(launch_container or self.scrollAreaWidgetContents_3),
                                          icon_path=_resolve_icon(self._icon_dirs, os.path.join('close', 'default.svg'), theme=self.theme))

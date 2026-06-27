@@ -2,7 +2,17 @@ import os
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QFrame, QSizePolicy
 from PySide6.QtCore import Qt, QEvent, Signal, QTimer
 
-from .titlebar import TitleBar
+try:
+    from .titlebar import TitleBar
+except ImportError:
+    try:
+        from titlebar import TitleBar
+    except ImportError:
+        import importlib.util as _il, os as _os
+        _spec = _il.spec_from_file_location("titlebar", _os.path.join(_os.path.dirname(__file__), "titlebar.py"))
+        _mod = _il.module_from_spec(_spec)
+        _spec.loader.exec_module(_mod)
+        TitleBar = _mod.TitleBar
 
 class DemoWindow(QWidget):
     uiReinitialized = Signal()
@@ -16,12 +26,13 @@ class DemoWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(0)
         
         self.main_container = QFrame(self)
         self.main_container.setObjectName("MainContainer")
         self.main_container.setProperty("state", "normal")
+        self.main_container.setCursor(Qt.CursorShape.ArrowCursor)
         container_layout = QVBoxLayout(self.main_container)
         container_layout.setContentsMargins(0, 0, 0, 0)
         container_layout.setSpacing(0)
@@ -49,7 +60,18 @@ class DemoWindow(QWidget):
         self._initial_theme = theme
 
         try:
-            from .theme_manager import get_theme_manager
+            try:
+                from .theme_manager import get_theme_manager
+            except ImportError:
+                try:
+                    from theme_manager import get_theme_manager
+                except ImportError:
+                    import importlib.util as _il, os as _os
+                    _spec = _il.spec_from_file_location("theme_manager", _os.path.join(_os.path.dirname(__file__), "theme_manager.py"))
+                    _mod = _il.module_from_spec(_spec)
+                    _spec.loader.exec_module(_mod)
+                    get_theme_manager = _mod.get_theme_manager
+            
             tm = get_theme_manager()
             if tm is not None:
                 tm.themeChanged.connect(self._on_theme_changed)
@@ -65,74 +87,95 @@ class DemoWindow(QWidget):
         self._resize_edge = None
         self.titlebar.installEventFilter(self)
 
+    def _get_resize_edge_and_cursor(self, pos):
+        margin = 8
+        rect = self.rect()
+        
+        on_left = pos.x() < margin
+        on_right = pos.x() > rect.width() - margin
+        on_top = pos.y() < margin
+        on_bottom = pos.y() > rect.height() - margin
+        
+        edge = None
+        cursor = Qt.CursorShape.ArrowCursor
+        
+        if on_top and on_left:
+            edge = Qt.TopEdge | Qt.LeftEdge
+            cursor = Qt.CursorShape.SizeFDiagCursor
+        elif on_top and on_right:
+            edge = Qt.TopEdge | Qt.RightEdge
+            cursor = Qt.CursorShape.SizeBDiagCursor
+        elif on_bottom and on_left:
+            edge = Qt.BottomEdge | Qt.LeftEdge
+            cursor = Qt.CursorShape.SizeBDiagCursor
+        elif on_bottom and on_right:
+            edge = Qt.BottomEdge | Qt.RightEdge
+            cursor = Qt.CursorShape.SizeFDiagCursor
+        elif on_left:
+            edge = Qt.LeftEdge
+            cursor = Qt.CursorShape.SizeHorCursor
+        elif on_right:
+            edge = Qt.RightEdge
+            cursor = Qt.CursorShape.SizeHorCursor
+        elif on_top:
+            edge = Qt.TopEdge
+            cursor = Qt.CursorShape.SizeVerCursor
+        elif on_bottom:
+            edge = Qt.BottomEdge
+            cursor = Qt.CursorShape.SizeVerCursor
+            
+        return edge, cursor
+
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
             pos = event.position().toPoint()
-            rect = self.rect()
-            margin = 8
-            
-            if pos.x() > rect.width() - margin and pos.y() > rect.height() - margin:
-                self._resize_edge = "both"
-                self._resizing = True
-            elif pos.x() > rect.width() - margin:
-                self._resize_edge = "right"
-                self._resizing = True
-            elif pos.y() > rect.height() - margin:
-                self._resize_edge = "bottom"
-                self._resizing = True
+            edge, _ = self._get_resize_edge_and_cursor(pos)
+            if edge is not None:
+                window_handle = self.window().windowHandle()
+                if window_handle:
+                    window_handle.startSystemResize(edge)
+                    event.accept()
+                    return
 
     def mouseMoveEvent(self, event):
         pos = event.position().toPoint()
-        rect = self.rect()
-        margin = 8
-
-        if self._resizing:
-            new_width = rect.width()
-            new_height = rect.height()
-
-            if self._resize_edge in ["right", "both"]:
-                new_width = pos.x()
-            if self._resize_edge in ["bottom", "both"]:
-                new_height = pos.y()
-
-            self.resize(max(self.minimumWidth(), new_width), 
-                        max(self.minimumHeight(), new_height))
-
-        if pos.x() > rect.width() - margin and pos.y() > rect.height() - margin:
-            self.setCursor(Qt.CursorShape.SizeFDiagCursor)
-        elif pos.x() > rect.width() - margin:
-            self.setCursor(Qt.CursorShape.SizeHorCursor)
-        elif pos.y() > rect.height() - margin:
-            self.setCursor(Qt.CursorShape.SizeVerCursor)
-        else:
-            self.setCursor(Qt.CursorShape.ArrowCursor)
+        _, cursor = self._get_resize_edge_and_cursor(pos)
+        self.setCursor(cursor)
 
     def mouseReleaseEvent(self, event):
-        self._resizing = False
-        self._resize_edge = None
         self.setCursor(Qt.CursorShape.ArrowCursor)
 
     def _toggle_maximize(self):
         if self.isMaximized():
             self.showNormal()
-            self.main_container.setProperty("state", "normal")
         else:
             self.showMaximized()
-            self.main_container.setProperty("state", "maximized")
-        
-        self.main_container.style().unpolish(self.main_container)
-        self.main_container.style().polish(self.main_container)
 
     def eventFilter(self, obj, event):
         if obj is self.titlebar:
             if event.type() == QEvent.MouseButtonPress:
                 if event.button() == Qt.LeftButton:
                     self._drag_pos = event.globalPosition().toPoint() - self.frameGeometry().topLeft()
+                    self.titlebar.setCursor(Qt.CursorShape.ClosedHandCursor)
+                    window_handle = self.window().windowHandle()
+                    if window_handle:
+                        window_handle.startSystemMove()
+                        return True
                     return True
             elif event.type() == QEvent.MouseMove:
                 if event.buttons() & Qt.LeftButton and self._drag_pos is not None:
+                    self.titlebar.setCursor(Qt.CursorShape.ClosedHandCursor)
                     self.move(event.globalPosition().toPoint() - self._drag_pos)
                     return True
+                else:
+                    self.titlebar.unsetCursor()
+            elif event.type() == QEvent.MouseButtonRelease:
+                self.titlebar.unsetCursor()
+                if self._drag_pos is not None:
+                    self._drag_pos = None
+                    return True
+            elif event.type() == QEvent.Leave:
+                self.titlebar.unsetCursor()
             elif event.type() == QEvent.MouseButtonDblClick:
                 self._toggle_maximize()
                 return True
@@ -142,6 +185,12 @@ class DemoWindow(QWidget):
         if event.type() == QEvent.WindowStateChange:
             state = "maximized" if self.isMaximized() else "normal"
             self.main_container.setProperty("state", state)
+            
+            if self.isMaximized():
+                self.layout().setContentsMargins(0, 0, 0, 0)
+            else:
+                self.layout().setContentsMargins(8, 8, 8, 8)
+                
             self.main_container.style().unpolish(self.main_container)
             self.main_container.style().polish(self.main_container)
         super().changeEvent(event)

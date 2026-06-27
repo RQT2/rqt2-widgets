@@ -18,22 +18,19 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
     QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout,
     QWidget)
-import importlib.util
 import os
 
+try:
+    from ..utils.icon_loader import _resolve_icon
+    from ..utils.frame_button import FrameButtonWidget
+except (ImportError, ValueError):
+    import sys
+    _parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    if _parent not in sys.path:
+        sys.path.insert(0, _parent)
+    from utils.icon_loader import _resolve_icon
+    from utils.frame_button import FrameButtonWidget
 
-def _resolve_icon(icon_dirs, rel_path):
-    if not icon_dirs:
-        return rel_path
-    # accept either single path or iterable
-    if isinstance(icon_dirs, (list, tuple)):
-        for base in icon_dirs:
-            cand = os.path.normpath(os.path.join(base, rel_path))
-            if os.path.exists(cand):
-                return cand
-        return rel_path
-    else:
-        return os.path.normpath(os.path.join(icon_dirs, rel_path))
 
 class Ui_Widget(object):
     def setupUi(self, Widget, icon_dirs=None, theme='default.qss'):
@@ -130,12 +127,7 @@ class Ui_Widget(object):
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        # instantiate reusable FrameButtonWidget from utils/frame_button.py
-        utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "utils", "frame_button.py"))
-        spec = importlib.util.spec_from_file_location("frame_button", utils_path)
-        frame_mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(frame_mod)
-        FrameButtonWidget = frame_mod.FrameButtonWidget
+        # instantiate reusable FrameButtonWidget
 
         self.FRAMENew = FrameButtonWidget(
             icon_path=_resolve_icon(icon_dirs, os.path.join('new', 'default.svg')), 
@@ -152,11 +144,6 @@ class Ui_Widget(object):
         self.horizontalLayout_2.addItem(self.horizontalSpacer_3)
 
         # FRAMEOpen -> FrameButtonWidget
-        utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "utils", "frame_button.py"))
-        spec = importlib.util.spec_from_file_location("frame_button", utils_path)
-        frame_mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(frame_mod)
-        FrameButtonWidget = frame_mod.FrameButtonWidget
 
         self.FRAMEOpen = FrameButtonWidget(
             icon_path=_resolve_icon(icon_dirs, os.path.join('load', 'default.svg')), 
@@ -172,11 +159,6 @@ class Ui_Widget(object):
         self.horizontalLayout_2.addItem(self.horizontalSpacer_4)
 
         # FRAMEClone -> FrameButtonWidget
-        utils_path = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "utils", "frame_button.py"))
-        spec = importlib.util.spec_from_file_location("frame_button", utils_path)
-        frame_mod = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(frame_mod)
-        FrameButtonWidget = frame_mod.FrameButtonWidget
 
         self.FRAMEClone = FrameButtonWidget(
             icon_path=_resolve_icon(icon_dirs, os.path.join('arrows', 'down.svg')), 
