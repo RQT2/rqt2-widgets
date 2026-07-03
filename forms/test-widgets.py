@@ -11,6 +11,11 @@ from f0_ui_main import Ui_Widget as Ui_Main
 from f1_ui_new_ws import Ui_Widget as Ui_New
 from f3_ui_clone_ws import Ui_Widget as Ui_Clone
 from f4_ui_package_manager import Ui_Widget as Ui_Pkg
+from f5_ui_wizard_init import Ui_Widget as Ui_WizInit
+from f6_ui_wizard_opt import Ui_Widget as Ui_WizOpt
+from f7_ui_wizard_install_config import Ui_Widget as Ui_WizConfig
+from f8_ui_wizard_installed import Ui_Widget as Ui_WizProgress
+from f9_ui_wizard_close import Ui_Widget as Ui_WizClose
 
 try:
     from ..utils.base_window import DemoWindow
@@ -78,11 +83,16 @@ if __name__ == "__main__":
     ]
 
     mapping = [
-        (Ui_Form, "RQT2 IDE / *", True, True),
-        (Ui_Main, "RQT2 IDE", False, False),
-        (Ui_New, "RQT2 IDE / Nuevo espacio de trabajo", False, False),
-        (Ui_Clone, "RQT2 IDE / Clonar espacio de trabajo", False, False),
-        (Ui_Pkg, "RQT2 IDE / Gestor de instalación", False, False)
+        #(Ui_Form, "RQT2 IDE / *", True, True),
+        #(Ui_Main, "RQT2 IDE", False, False),
+        #(Ui_New, "RQT2 IDE / Nuevo espacio de trabajo", False, False),
+        #(Ui_Clone, "RQT2 IDE / Clonar espacio de trabajo", False, False),
+        #(Ui_Pkg, "RQT2 IDE / Gestor de instalación", False, False),
+        (Ui_WizInit, "RQT2 IDE / Asistente de Instalación", False, False),
+        (Ui_WizOpt, "RQT2 IDE / Opciones de Instalación", False, False),
+        (Ui_WizConfig, "RQT2 IDE / Versión de ROS2", False, False),
+        (Ui_WizProgress, "RQT2 IDE / Progreso de Instalación", False, False),
+        (Ui_WizClose, "RQT2 IDE / Finalizar Instalación", False, False)
     ]
 
     for ui_class, title, show_daemon, show_tab in mapping:
