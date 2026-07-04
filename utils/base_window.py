@@ -82,6 +82,18 @@ class DemoWindow(QWidget):
         container_layout.addWidget(self.content)
         layout.addWidget(self.main_container)
 
+        content_min = self.content.minimumSize()
+        content_max = self.content.maximumSize()
+        if content_min.isValid() and content_max.isValid() and content_min == content_max and content_min.width() > 0:
+            title_height = 40
+            fixed_width = content_min.width() + 16
+            fixed_height = content_min.height() + 16 + title_height
+            self.setFixedSize(fixed_width, fixed_height)
+            try:
+                self.titlebar._btn_max.setVisible(False)
+            except Exception:
+                pass
+
         self._drag_pos = None
         self._resizing = False
         self._resize_edge = None
@@ -127,6 +139,8 @@ class DemoWindow(QWidget):
         return edge, cursor
 
     def mousePressEvent(self, event):
+        if self.minimumSize() == self.maximumSize():
+            return
         if event.button() == Qt.LeftButton:
             pos = event.position().toPoint()
             edge, _ = self._get_resize_edge_and_cursor(pos)
@@ -138,6 +152,9 @@ class DemoWindow(QWidget):
                     return
 
     def mouseMoveEvent(self, event):
+        if self.minimumSize() == self.maximumSize():
+            self.setCursor(Qt.CursorShape.ArrowCursor)
+            return
         pos = event.position().toPoint()
         _, cursor = self._get_resize_edge_and_cursor(pos)
         self.setCursor(cursor)
@@ -146,6 +163,8 @@ class DemoWindow(QWidget):
         self.setCursor(Qt.CursorShape.ArrowCursor)
 
     def _toggle_maximize(self):
+        if self.minimumSize() == self.maximumSize():
+            return
         if self.isMaximized():
             self.showNormal()
         else:
@@ -217,6 +236,18 @@ class DemoWindow(QWidget):
 
             old_content.hide()
             QTimer.singleShot(0, old_content.deleteLater)
+
+            content_min = self.content.minimumSize()
+            content_max = self.content.maximumSize()
+            if content_min.isValid() and content_max.isValid() and content_min == content_max and content_min.width() > 0:
+                title_height = 40
+                fixed_width = content_min.width() + 16
+                fixed_height = content_min.height() + 16 + title_height
+                self.setFixedSize(fixed_width, fixed_height)
+                try:
+                    self.titlebar._btn_max.setVisible(False)
+                except Exception:
+                    pass
 
             self.main_container.style().unpolish(self.main_container)
             self.main_container.style().polish(self.main_container)
