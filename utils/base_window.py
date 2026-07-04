@@ -26,7 +26,7 @@ class DemoWindow(QWidget):
         self.setAttribute(Qt.WA_TranslucentBackground)
 
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setContentsMargins(3, 3, 3, 3)
         layout.setSpacing(0)
         
         self.main_container = QFrame(self)
@@ -100,7 +100,7 @@ class DemoWindow(QWidget):
         self.titlebar.installEventFilter(self)
 
     def _get_resize_edge_and_cursor(self, pos):
-        margin = 8
+        margin = 3
         rect = self.rect()
         
         on_left = pos.x() < margin
@@ -208,7 +208,7 @@ class DemoWindow(QWidget):
             if self.isMaximized():
                 self.layout().setContentsMargins(0, 0, 0, 0)
             else:
-                self.layout().setContentsMargins(8, 8, 8, 8)
+                self.layout().setContentsMargins(3, 3, 3, 3)
                 
             self.main_container.style().unpolish(self.main_container)
             self.main_container.style().polish(self.main_container)
