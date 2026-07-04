@@ -44,7 +44,7 @@ class FrameButtonWidget(QFrame):
     clicked = Signal()
 
     def __init__(self, icon_path: Optional[str] = None, title: str = "", info: str = "",
-                 parent=None, icon_dirs: Optional[List[str]] = None, max_size: int = 512,
+                 parent=None, icon_dirs: Optional[List[str]] = None, max_size: int = 160,
                  apply_theme_from_palette: bool = True, theme: str = 'default.qss'):
         super().__init__(parent)
         self.setCursor(QCursor(Qt.PointingHandCursor))
@@ -55,8 +55,10 @@ class FrameButtonWidget(QFrame):
         self.icon_dirs = icon_dirs or []
         self.max_size = max_size
 
-        self.icon = ScaledIconLabel(max_size=self.max_size, parent=self)
-        self.icon = ScaledIconLabel(max_size=self.max_size, parent=self, base_size=128, scale_power=1.8)
+        self.icon = QLabel(parent=self)
+        self.icon.setFixedSize(self.max_size, self.max_size)
+        self.icon.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.icon.setStyleSheet("background: transparent;")
         self.title = QLabel(title, parent=self)
         self.title.setProperty('role', 'title')
         self.info = QLabel(info, parent=self)
@@ -73,7 +75,7 @@ class FrameButtonWidget(QFrame):
             self._icon_path = icon_path
             pix = self._load_pix(icon_path, theme=theme)
             if pix and not pix.isNull():
-                self.icon.setPixmap(pix)
+                self.icon.setPixmap(pix.scaled(self.max_size, self.max_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         else:
             self._icon_path = None
 
@@ -85,7 +87,7 @@ class FrameButtonWidget(QFrame):
             if getattr(self, '_icon_path', None):
                 pix = self._load_pix(self._icon_path, theme=theme)
                 if pix and not pix.isNull():
-                    self.icon.setPixmap(pix)
+                    self.icon.setPixmap(pix.scaled(self.max_size, self.max_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))
         except Exception:
             pass
 
@@ -220,4 +222,4 @@ class FrameButtonWidget(QFrame):
     def setIcon(self, path: str, theme: str = 'default.qss'):
         pix = self._load_pix(path, theme=theme)
         if pix and not pix.isNull():
-            self.icon.setPixmap(pix)
+            self.icon.setPixmap(pix.scaled(self.max_size, self.max_size, Qt.KeepAspectRatio, Qt.SmoothTransformation))

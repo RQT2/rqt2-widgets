@@ -42,20 +42,15 @@ class Ui_Widget(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(Widget.sizePolicy().hasHeightForWidth())
         Widget.setSizePolicy(sizePolicy)
-        Widget.setMinimumSize(QSize(670, 550))
+        Widget.resize(880, 550)
+        Widget.setMinimumSize(QSize(880, 550))
+        Widget.setMaximumSize(QSize(880, 550))
         icon = QIcon()
         icon_path = _resolve_icon(icon_dirs, os.path.join('logo.svg'))
         icon.addFile(icon_path, QSize(), QIcon.Mode.Normal, QIcon.State.Off)
         Widget.setWindowIcon(icon)
         self.horizontalLayout = QHBoxLayout(Widget)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer)
-
-        self.horizontalSpacer_6 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_6)
 
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -81,12 +76,7 @@ class Ui_Widget(object):
 
         self.verticalLayout.addItem(self.verticalSpacer)
 
-
         self.horizontalLayout.addLayout(self.verticalLayout)
-
-        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_5)
 
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
@@ -172,21 +162,7 @@ class Ui_Widget(object):
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
 
-        self.verticalSpacer_4 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_2.addItem(self.verticalSpacer_4)
-
-
         self.horizontalLayout.addLayout(self.verticalLayout_2)
-
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_2)
-
-        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_7)
-
 
         self.retranslateUi(Widget)
 

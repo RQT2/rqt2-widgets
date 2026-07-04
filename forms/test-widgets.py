@@ -84,15 +84,15 @@ if __name__ == "__main__":
 
     mapping = [
         #(Ui_Form, "RQT2 IDE / *", True, True),
-        #(Ui_Main, "RQT2 IDE", False, False),
+        (Ui_Main, "RQT2 IDE", False, False),
         #(Ui_New, "RQT2 IDE / Nuevo espacio de trabajo", False, False),
         #(Ui_Clone, "RQT2 IDE / Clonar espacio de trabajo", False, False),
         #(Ui_Pkg, "RQT2 IDE / Gestor de instalación", False, False),
-        (Ui_WizInit, "RQT2 IDE / Asistente de Instalación", False, False),
-        (Ui_WizOpt, "RQT2 IDE / Opciones de Instalación", False, False),
-        (Ui_WizConfig, "RQT2 IDE / Versión de ROS2", False, False),
-        (Ui_WizProgress, "RQT2 IDE / Progreso de Instalación", False, False),
-        (Ui_WizClose, "RQT2 IDE / Finalizar Instalación", False, False)
+        #(Ui_WizInit, "RQT2 IDE / Asistente de Instalación", False, False),
+        #(Ui_WizOpt, "RQT2 IDE / Opciones de Instalación", False, False),
+        #(Ui_WizConfig, "RQT2 IDE / Versión de ROS2", False, False),
+        #(Ui_WizProgress, "RQT2 IDE / Progreso de Instalación", False, False),
+        #(Ui_WizClose, "RQT2 IDE / Finalizar Instalación", False, False)
     ]
 
     for ui_class, title, show_daemon, show_tab in mapping:
