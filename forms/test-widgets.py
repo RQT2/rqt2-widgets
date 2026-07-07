@@ -17,6 +17,8 @@ from f7_ui_wizard_install_config import Ui_Widget as Ui_WizConfig
 from f8_ui_wizard_installed import Ui_Widget as Ui_WizProgress
 from f9_ui_wizard_close import Ui_Widget as Ui_WizClose
 
+from g1_ui_text_editor import Ui_Widget as Ui_TextEditor
+
 try:
     from ..utils.base_window import DemoWindow
 except (ImportError, ValueError):
@@ -39,29 +41,36 @@ if __name__ == "__main__":
         fonts_base = os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'assets', 'fonts'))
         candidates = [
             os.path.join(fonts_base, 'Nunito_Sans'),
-            os.path.join(fonts_base, 'nunito'),
+            os.path.join(fonts_base, 'Ubuntu_Mono'),
+            os.path.join(fonts_base, 'Ubuntu_Mono_Nerd_Font'),
             fonts_base,
         ]
-        loaded_family = None
+        loaded_families = []
         for fd in candidates:
             if not fd or not os.path.exists(fd):
                 continue
-            for fn in os.listdir(fd):
-                if not fn.lower().endswith(('.ttf', '.otf')):
-                    continue
-                path = os.path.join(fd, fn)
-                try:
-                    fid = QFontDatabase.addApplicationFont(path)
-                    if fid != -1:
-                        families = QFontDatabase.applicationFontFamilies(fid)
-                        if families:
-                            loaded_family = families[0]
-                except Exception:
-                    pass
-            if loaded_family:
+            if os.path.isdir(fd):
+                for fn in os.listdir(fd):
+                    if not fn.lower().endswith(('.ttf', '.otf')):
+                        continue
+                    path = os.path.join(fd, fn)
+                    try:
+                        fid = QFontDatabase.addApplicationFont(path)
+                        if fid != -1:
+                            families = QFontDatabase.applicationFontFamilies(fid)
+                            if families and families[0] not in loaded_families:
+                                loaded_families.append(families[0])
+                    except Exception:
+                        pass
+        app_default = None
+        for fam in loaded_families:
+            if "nunito" in fam.lower():
+                app_default = fam
                 break
-        if loaded_family:
-            app.setFont(QFont(loaded_family))
+        if not app_default and loaded_families:
+            app_default = loaded_families[0]
+        if app_default:
+            app.setFont(QFont(app_default))
     except Exception as e:
         pass
 
@@ -76,7 +85,7 @@ if __name__ == "__main__":
     windows = []
     # define icon directories to try (order matters)
     # icon directories (order matters)
-    icons_dirs = [
+    icons_dirs = [ 
         os.path.join(base, '..', 'rqt2-widgets', 'icons'),
         os.path.join(base, '..', 'rqt2-components', 'assets/branding'),
         os.path.join(base, '..', 'rqt2-components', 'assets/icons')
@@ -84,15 +93,16 @@ if __name__ == "__main__":
 
     mapping = [
         #(Ui_Form, "RQT2 IDE / *", True, True),
-        (Ui_Main, "RQT2 IDE", False, False),
-        (Ui_New, "RQT2 IDE / Nuevo espacio de trabajo", False, False),
+        #(Ui_Main, "RQT2 IDE", False, False),
+        #(Ui_New, "RQT2 IDE / Nuevo espacio de trabajo", False, False),
         #(Ui_Clone, "RQT2 IDE / Clonar espacio de trabajo", False, False),
         #(Ui_Pkg, "RQT2 IDE / Gestor de instalación", False, False),
         #(Ui_WizInit, "RQT2 IDE / Asistente de Instalación", False, False),
         #(Ui_WizOpt, "RQT2 IDE / Opciones de Instalación", False, False),
         #(Ui_WizConfig, "RQT2 IDE / Versión de ROS2", False, False),
         #(Ui_WizProgress, "RQT2 IDE / Progreso de Instalación", False, False),
-        #(Ui_WizClose, "RQT2 IDE / Finalizar Instalación", False, False)
+        #(Ui_WizClose, "RQT2 IDE / Finalizar Instalación", False, False),
+        (Ui_TextEditor, "RQT2 IDE / *", True, True)
     ]
 
     for ui_class, title, show_daemon, show_tab in mapping:
