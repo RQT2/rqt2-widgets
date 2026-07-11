@@ -20,6 +20,7 @@ from f9_ui_wizard_close import Ui_Widget as Ui_WizClose
 from g1_ui_text_editor import Ui_Widget as Ui_TextEditor
 from g2_ui_compiler import Ui_Widget as Ui_Compiler
 from g3_ui_twist_controller import Ui_Widget as Ui_Twist
+from g4_ui_ssh import Ui_Widget as Ui_Ssh
 
 try:
     from ..utils.base_window import DemoWindow
@@ -106,7 +107,8 @@ if __name__ == "__main__":
         #(Ui_WizClose, "RQT2 IDE / Finalizar Instalación", False, False),
         #(Ui_TextEditor, "RQT2 IDE / *", True, True),
         #(Ui_Compiler, "RQT2 IDE / *", True, False),
-        (Ui_Twist, "RQT2 IDE / *", True, False)
+        #(Ui_Twist, "RQT2 IDE / *", True, False),
+        (Ui_Ssh, "RQT2 IDE / *", True, False)
     ]
 
     for ui_class, title, show_daemon, show_tab in mapping:
