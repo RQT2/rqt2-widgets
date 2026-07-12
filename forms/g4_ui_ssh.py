@@ -311,7 +311,7 @@ class Ui_Widget(object):
         self.label.setText(QCoreApplication.translate("Widget", u"Protocolo:", None))
         self.COMBOProtocol.setItemText(0, QCoreApplication.translate("Widget", u"Todo", None))
         self.COMBOProtocol.setItemText(1, QCoreApplication.translate("Widget", u"IPv4 addresses", None))
-        self.COMBOProtocol.setItemText(2, QCoreApplication.translate("Widget", u"IPv4 addresses", None))
+        self.COMBOProtocol.setItemText(2, QCoreApplication.translate("Widget", u"IPv6 addresses", None))
 
         self.CHECKVerbose.setText(QCoreApplication.translate("Widget", u"Salida detallada.", None))
         self.BTNConnect.setText(QCoreApplication.translate("Widget", u"Conectar", None))

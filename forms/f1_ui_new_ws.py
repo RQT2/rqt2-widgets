@@ -760,7 +760,7 @@ class Ui_Widget(object):
         self.TABPKGNew.setTabText(self.TABPKGNew.indexOf(self.TAB_my_pkg), QCoreApplication.translate("Widget", u"my_pkg", None))
         self.BTNMake.setText(QCoreApplication.translate("Widget", u"Crear", None))
         self.BTNCancell.setText(QCoreApplication.translate("Widget", u"Cancelar", None))
-        self.LABELDir.setText(QCoreApplication.translate("Widget", u"Ubicaci\u00f3n del nuevo paquete", None))
+        self.LABELDir.setText(QCoreApplication.translate("Widget", u"Ubicaci\u00f3n del nuevo paquete:", None))
         self.EDITDir.setPlaceholderText(QCoreApplication.translate("Widget", u"~/", None))
     # retranslateUi
 
