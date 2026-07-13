@@ -1,3 +1,4 @@
+import g6_ui_gz_sim
 import sys
 
 from PySide6.QtWidgets import QApplication, QWidget, QFrame, QVBoxLayout
@@ -22,6 +23,7 @@ from g2_ui_compiler import Ui_Widget as Ui_Compiler
 from g3_ui_twist_controller import Ui_Widget as Ui_Twist
 from g4_ui_ssh import Ui_Widget as Ui_Ssh
 from g5_ui_rviz2 import Ui_Widget as Ui_Rviz
+from g6_ui_gz_sim import Ui_Widget as Ui_Gz
 from g7_ui_rqt import Ui_Widget as Ui_Rqt
 from g8_ui_package_manager import Ui_Widget as Ui_PkgManager
 
@@ -109,10 +111,11 @@ if __name__ == "__main__":
         #(Ui_WizProgress, "RQT2 IDE / Progreso de Instalación", False, False),
         #(Ui_WizClose, "RQT2 IDE / Finalizar Instalación", False, False),
         #(Ui_TextEditor, "RQT2 IDE / Editor de código", True, True),
-        (Ui_Compiler, "RQT2 IDE / Compilador", True, False),
+        #(Ui_Compiler, "RQT2 IDE / Compilador", True, False),
         #(Ui_Twist, "RQT2 IDE / Twist Control", True, False),
         #(Ui_Ssh, "RQT2 IDE / ssh", True, False),
         #(Ui_Rviz, "RQT2 IDE / rviz2", True, False),
+        (Ui_Gz, "RQT2 IDE / Gazebo", True, False),
         #(Ui_Rqt, "RQT2 IDE / rqt", True, False),
         #(Ui_PkgManager, "RQT2 IDE / Gestor de paquetes", True, False),
     ]
