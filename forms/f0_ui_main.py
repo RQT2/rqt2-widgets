@@ -170,11 +170,11 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE", None))
         self.NAVHome.setText(QCoreApplication.translate("Widget", u"Proyectos", None))
         self.NAVInstall.setText(QCoreApplication.translate("Widget", u"Dependencias", None))
         self.NAVDocs.setText(QCoreApplication.translate("Widget", u"Documentaci\u00f3n", None))
-        self.LABELTitleWelcome.setText(QCoreApplication.translate("Widget", u"Bienvenido a RQT2 IDE", None))
+        self.LABELTitleWelcome.setText(QCoreApplication.translate("Widget", u"Bienvenido a RQTLL IDE", None))
         self.LABELInfoWelcome.setText(QCoreApplication.translate("Widget", u"Crea un nuevo espacio de trabajo para iniciar desde cero.\n"
 "O carga un espacio de trabajo existente en el almacenamiento local", None))
         self.ICONNew.setText("")

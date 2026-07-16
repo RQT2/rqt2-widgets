@@ -285,7 +285,7 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE", None))
         self.label_5.setText(QCoreApplication.translate("Widget", u"Formato de t\u00edtulo:", None))
         self.EDITTitle.setPlaceholderText(QCoreApplication.translate("Widget", u"{NAMESPACE} - {config}/{file} - RViz2", None))
         self.label_4.setText(QCoreApplication.translate("Widget", u"Configuraci\u00f3n:", None))

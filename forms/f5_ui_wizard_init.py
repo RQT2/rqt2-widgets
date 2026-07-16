@@ -120,9 +120,9 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE / Inicializar Instalador", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE / Inicializar Instalador", None))
         self.LABELLogo.setText("")
-        self.LABELTitle.setText(QCoreApplication.translate("Widget", u"Bienvenido a RQT2", None))
+        self.LABELTitle.setText(QCoreApplication.translate("Widget", u"Bienvenido a RQTLL", None))
         self.LABELText.setText(QCoreApplication.translate("Widget", u"Este asistente de configuración lo ayudará a configurar ROS2 en su sistema.", None))
         self.BTNBack.setText(QCoreApplication.translate("Widget", u"Regresar", None))
         self.BTNNext.setText(QCoreApplication.translate("Widget", u"Siguiente", None))

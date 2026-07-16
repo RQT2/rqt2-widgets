@@ -46,7 +46,7 @@ if __name__ == "__main__":
     base = os.path.normpath(os.path.join(os.path.dirname(__file__), '..'))
 
     try:
-        fonts_base = os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'assets', 'fonts'))
+        fonts_base = os.path.normpath(os.path.join(base, '..', 'rqtll-components', 'assets', 'fonts'))
         candidates = [
             os.path.join(fonts_base, 'Nunito_Sans'),
             os.path.join(fonts_base, 'Ubuntu_Mono'),
@@ -82,7 +82,7 @@ if __name__ == "__main__":
     except Exception as e:
         pass
 
-    qss_path = os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'styles/themes', theme))
+    qss_path = os.path.normpath(os.path.join(base, '..', 'rqtll-components', 'styles/themes', theme))
     try:
         if os.path.exists(qss_path):
             with open(qss_path, 'r') as _f:
@@ -94,30 +94,30 @@ if __name__ == "__main__":
     # define icon directories to try (order matters)
     # icon directories (order matters)
     icons_dirs = [ 
-        os.path.join(base, '..', 'rqt2-widgets', 'icons'),
-        os.path.join(base, '..', 'rqt2-components', 'assets/branding'),
-        os.path.join(base, '..', 'rqt2-components', 'assets/icons')
+        os.path.join(base, '..', 'rqtll-widgets', 'icons'),
+        os.path.join(base, '..', 'rqtll-components', 'assets/branding'),
+        os.path.join(base, '..', 'rqtll-components', 'assets/icons')
     ]
 
     mapping = [
-        #(Ui_Form, "RQT2 IDE / *", True, True),
-        #(Ui_Main, "RQT2 IDE", False, False),
-        #(Ui_New, "RQT2 IDE / Nuevo espacio de trabajo", False, False),
-        #(Ui_Clone, "RQT2 IDE / Clonar espacio de trabajo", False, False),
-        #(Ui_Pkg, "RQT2 IDE / Gestor de instalación", False, False),
-        #(Ui_WizInit, "RQT2 IDE / Asistente de Instalación", False, False),
-        #(Ui_WizOpt, "RQT2 IDE / Opciones de Instalación", False, False),
-        #(Ui_WizConfig, "RQT2 IDE / Versión de ROS2", False, False),
-        #(Ui_WizProgress, "RQT2 IDE / Progreso de Instalación", False, False),
-        #(Ui_WizClose, "RQT2 IDE / Finalizar Instalación", False, False),
-        #(Ui_TextEditor, "RQT2 IDE / Editor de código", True, True),
-        #(Ui_Compiler, "RQT2 IDE / Compilador", True, False),
-        #(Ui_Twist, "RQT2 IDE / Twist Control", True, False),
-        #(Ui_Ssh, "RQT2 IDE / ssh", True, False),
-        #(Ui_Rviz, "RQT2 IDE / rviz2", True, False),
-        (Ui_Gz, "RQT2 IDE / Gazebo", True, False),
-        #(Ui_Rqt, "RQT2 IDE / rqt", True, False),
-        #(Ui_PkgManager, "RQT2 IDE / Gestor de paquetes", True, False),
+        #(Ui_Form, "RQTLL IDE / *", True, True),
+        #(Ui_Main, "RQTLL IDE", False, False),
+        #(Ui_New, "RQTLL IDE / Nuevo espacio de trabajo", False, False),
+        #(Ui_Clone, "RQTLL IDE / Clonar espacio de trabajo", False, False),
+        #(Ui_Pkg, "RQTLL IDE / Gestor de instalación", False, False),
+        #(Ui_WizInit, "RQTLL IDE / Asistente de Instalación", False, False),
+        #(Ui_WizOpt, "RQTLL IDE / Opciones de Instalación", False, False),
+        #(Ui_WizConfig, "RQTLL IDE / Versión de ROS2", False, False),
+        #(Ui_WizProgress, "RQTLL IDE / Progreso de Instalación", False, False),
+        #(Ui_WizClose, "RQTLL IDE / Finalizar Instalación", False, False),
+        #(Ui_TextEditor, "RQTLL IDE / Editor de código", True, True),
+        #(Ui_Compiler, "RQTLL IDE / Compilador", True, False),
+        #(Ui_Twist, "RQTLL IDE / Twist Control", True, False),
+        #(Ui_Ssh, "RQTLL IDE / ssh", True, False),
+        #(Ui_Rviz, "RQTLL IDE / rviz2", True, False),
+        (Ui_Gz, "RQTLL IDE / Gazebo", True, False),
+        #(Ui_Rqt, "RQTLL IDE / rqt", True, False),
+        #(Ui_PkgManager, "RQTLL IDE / Gestor de paquetes", True, False),
     ]
 
     for ui_class, title, show_daemon, show_tab in mapping:

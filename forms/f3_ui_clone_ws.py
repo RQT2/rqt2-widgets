@@ -167,7 +167,7 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE / Clonar repositorio", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE / Clonar repositorio", None))
         self.LABELUri.setText(QCoreApplication.translate("Widget", u"URL:", None))
         self.EDITUri.setPlaceholderText(QCoreApplication.translate("Widget", u"https://", None))
         self.LABELDir.setText(QCoreApplication.translate("Widget", u"Destino:", None))

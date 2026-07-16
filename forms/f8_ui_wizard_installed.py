@@ -148,7 +148,7 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE / Progreso de Instalación", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE / Progreso de Instalación", None))
         self.LABELInstallProgress.setText(QCoreApplication.translate("Widget", u"Instalando ROS2", None))
         self.CBLoadRosShell.setText(QCoreApplication.translate("Widget", u"Cargar ROS2 con la shell", None))
         self.CBConfigDomainId.setText(QCoreApplication.translate("Widget", u"Configurar ROS_DAMAIN_ID (+ufw allow)", None))

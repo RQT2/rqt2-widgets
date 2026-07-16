@@ -336,7 +336,7 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE / Versión de ROS2", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE / Versión de ROS2", None))
         
         self.LABELTitleCore1.setText(QCoreApplication.translate("Widget", u"$install_opt_core_title", None))
         self.LABELInfoCore1.setText(QCoreApplication.translate("Widget", u"$install_opt_core_desc", None))

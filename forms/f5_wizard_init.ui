@@ -25,7 +25,7 @@
         <enum>Qt::TextFormat::PlainText</enum>
        </property>
        <property name="pixmap">
-        <pixmap>../rqt2/rqt2-components/assets/branding/symbolic-color.svg</pixmap>
+        <pixmap>../rqtll/rqtll-components/assets/branding/symbolic-color.svg</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>

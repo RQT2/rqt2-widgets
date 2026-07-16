@@ -82,7 +82,7 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE / Finalizar Instalación", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE / Finalizar Instalación", None))
         self.LABELTitle.setText(QCoreApplication.translate("Widget", u"Instalación completada", None))
         self.LABELParagraph.setText(QCoreApplication.translate("Widget", u"Instalación completada exitosamente", None))
         self.BTNFinish.setText(QCoreApplication.translate("Widget", u"Finalizar", None))

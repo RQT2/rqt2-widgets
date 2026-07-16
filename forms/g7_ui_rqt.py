@@ -274,7 +274,7 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE", None))
         self.CHECKhtfl.setText(QCoreApplication.translate("Widget", u"Bloquear GUI.", None))
         self.label_6.setText(QCoreApplication.translate("Widget", u"Perspectiva:", None))
         self.EditPerspectivename.setPlaceholderText(QCoreApplication.translate("Widget", u"Nombre", None))

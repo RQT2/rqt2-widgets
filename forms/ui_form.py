@@ -121,5 +121,5 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE", None))
     # retranslateUi

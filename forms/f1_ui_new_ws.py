@@ -707,7 +707,7 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE / Nuevo espacio de trabajo", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE / Nuevo espacio de trabajo", None))
         self.LABELWSNew.setText(QCoreApplication.translate("Widget", u"Nombre del nuevo espacio de trabajo:", None))
         self.EDITWSNew.setPlaceholderText(QCoreApplication.translate("Widget", u"ros2_ws", None))
         self.LABELPKGNew.setText(QCoreApplication.translate("Widget", u"Nombre del paquete a incluir:", None))

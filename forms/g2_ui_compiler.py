@@ -582,7 +582,7 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE", None))
         self.label_4.setText(QCoreApplication.translate("Widget", u"Colcon", None))
         self.BTNROSColcon.setText(QCoreApplication.translate("Widget", u"Compilar", None))
         self.BTNROSCLean.setText(QCoreApplication.translate("Widget", u"Limpiar", None))

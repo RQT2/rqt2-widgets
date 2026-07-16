@@ -30,11 +30,11 @@ try:
 except Exception:
     _theme_manager = None
     try:
-        from rqt2_widgets.utils.theme_manager import get_theme_manager as _gm
+        from rqtll_widgets.utils.theme_manager import get_theme_manager as _gm
         _theme_manager = _gm()
     except Exception:
         try:
-            from external.rqt2_widgets.utils.theme_manager import get_theme_manager as _gm2
+            from external.rqtll_widgets.utils.theme_manager import get_theme_manager as _gm2
             _theme_manager = _gm2()
         except Exception:
             _theme_manager = None
@@ -194,10 +194,10 @@ class FrameButtonWidget(QFrame):
 
         candidates = [
             os.path.normpath(os.path.join(base, 'icons', rel_path)),
-            os.path.normpath(os.path.join(base, '..', 'rqt2_components', 'assets', 'branding', rel_path)),
-            os.path.normpath(os.path.join(base, '..', 'rqt2_components', 'assets', 'icons', rel_path)),
-            os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'assets', 'branding', rel_path)),
-            os.path.normpath(os.path.join(base, '..', 'rqt2-components', 'assets', 'icons', rel_path)),
+            os.path.normpath(os.path.join(base, '..', 'rqtll_components', 'assets', 'branding', rel_path)),
+            os.path.normpath(os.path.join(base, '..', 'rqtll_components', 'assets', 'icons', rel_path)),
+            os.path.normpath(os.path.join(base, '..', 'rqtll-components', 'assets', 'branding', rel_path)),
+            os.path.normpath(os.path.join(base, '..', 'rqtll-components', 'assets', 'icons', rel_path)),
             os.path.normpath(rel_path),
         ]
         for p in candidates:

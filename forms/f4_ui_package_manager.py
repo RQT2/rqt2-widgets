@@ -271,7 +271,7 @@ class Ui_Widget(object):
     # setupUi
 
     def retranslateUi(self, Widget):
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE / Gestor de paquetes", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE / Gestor de paquetes", None))
         self.LABELSearch.setText(QCoreApplication.translate("Widget", u"Buscar", None))
         #self.EDITSearch.setText(QCoreApplication.translate("Widget", u"*", None))
         self.CBOPT1Search.setText(QCoreApplication.translate("Widget", u"ROS2", None))

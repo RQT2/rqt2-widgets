@@ -265,7 +265,7 @@ class Ui_Widget(object):
         new_path = _resolve_icon(icon_dirs, os.path.join('icons', 'new', 'default.svg'), self.theme)
         folder_path = _resolve_icon(icon_dirs, os.path.join('icons', 'folder', 'default.svg'), self.theme)
 
-        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQT2 IDE", None))
+        Widget.setWindowTitle(QCoreApplication.translate("Widget", u"RQTLL IDE", None))
         ___qtreewidgetitem = self.TREEFILEManage.headerItem()
         ___qtreewidgetitem.setText(0, QCoreApplication.translate("Widget", u"Explorador", None))
 
