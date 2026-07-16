@@ -1,14 +1,14 @@
-# rqt2-widgets
+# rqtll-widgets
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/RQT2/rqt2-components/blob/main/assets/branding/logo-main-light.svg">
-  <source media="(prefers-color-scheme: light)" srcset="https://github.com/RQT2/rqt2-components/blob/main/assets/branding/logo-main-dark.svg">
-  <img alt="RQT2 Logo" src="https://github.com/RQT2/rqt2-components/blob/main/assets/branding/logo-main-color.svg" width="50px">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github.com/RQTLL/rqtll-components/blob/main/assets/branding/logo-main-light.svg">
+  <source media="(prefers-color-scheme: light)" srcset="https://github.com/RQTLL/rqtll-components/blob/main/assets/branding/logo-main-dark.svg">
+  <img alt="RQTLL Logo" src="https://github.com/RQTLL/rqtll-components/blob/main/assets/branding/logo-main-color.svg" width="50px">
 </picture>
 
 [<img alt="details" src="./img/IMG01.png"/>](#)
 
-Formularios y componentes reutilizables para RQT2 usando `XML UI` y `PySide6`. Este repositorio proporciona una colección de widgets y formularios. El reposicorio está diseñado para incorporar las paletas de colores y estilos `QSS` definidos en [rqt2-components](https://github.com/RQT2/rqt2-components).
+Formularios y componentes reutilizables para RQTLL usando `XML UI` y `PySide6`. Este repositorio proporciona una colección de widgets y formularios. El reposicorio está diseñado para incorporar las paletas de colores y estilos `QSS` definidos en [rqtll-components](https://github.com/RQTLL/rqtll-components).
 
 ## Quickstart
 
@@ -18,7 +18,7 @@ Para usar los widgets en tu proyecto, puedes clonar este repositorio o añadirlo
 
 ```bash
 # Usa la carpeta external/ para recursos compartidos
-git submodule add https://github.com/RQT2/rqt2-widgets.git external/rqt2-widgets
+git submodule add https://github.com/RQTLL/rqtll-widgets.git external/rqtll-widgets
 git submodule update --init --recursive
 
 ```
