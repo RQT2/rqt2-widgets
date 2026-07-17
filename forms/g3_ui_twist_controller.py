@@ -8,7 +8,6 @@
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from utils import scaled_icon_label
 from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
     QMetaObject, QObject, QPoint, QRect,
     QSize, QTime, QUrl, Qt)
@@ -24,6 +23,7 @@ import os
 try:
     from ..utils.icon_loader import load_qicon, load_qpixmap, _resolve_icon
     from ..utils.nav import NavButton
+    from ..utils import scaled_icon_label
 except (ImportError, ValueError):
     import sys
     _parent = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -31,6 +31,7 @@ except (ImportError, ValueError):
         sys.path.insert(0, _parent)
     from utils.icon_loader import load_qicon, load_qpixmap, _resolve_icon
     from utils.nav import NavButton
+    from utils import scaled_icon_label
 
 placeholder = os.path.normpath(os.path.join(os.path.dirname(__file__), '..', 'icons', 'placeholder.svg'))
 
