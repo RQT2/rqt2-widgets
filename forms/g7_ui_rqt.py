@@ -297,6 +297,6 @@ class Ui_Widget(object):
         self.OPTStandalone.setItemText(12, QCoreApplication.translate("Widget", u"rqt_srv.services", None))
         self.OPTStandalone.setItemText(13, QCoreApplication.translate("Widget", u"rqt_topic.topic", None))
 
-        self.BTNConnect.setText(QCoreApplication.translate("Widget", u"Connectar", None))
+        self.BTNConnect.setText(QCoreApplication.translate("Widget", u"Conectar", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("Widget", u"Tab 1", None))
     # retranslateUi
