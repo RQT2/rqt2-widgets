@@ -753,7 +753,6 @@ class Ui_Widget(object):
         sizePolicy2.setHeightForWidth(self.SPINRecordPeriod.sizePolicy().hasHeightForWidth())
         self.SPINRecordPeriod.setSizePolicy(sizePolicy2)
         self.SPINRecordPeriod.setMaximum(1000.000000000000000)
-        self.SPINRecordPeriod.setValue(1.000000000000000)
 
         self.horizontalLayout_11.addWidget(self.SPINRecordPeriod)
 
