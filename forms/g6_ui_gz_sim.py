@@ -310,7 +310,7 @@ class Ui_Widget(object):
         sizePolicy2.setHeightForWidth(self.SPINHzRate.sizePolicy().hasHeightForWidth())
         self.SPINHzRate.setSizePolicy(sizePolicy2)
         self.SPINHzRate.setMaximum(1000.000000000000000)
-        self.SPINHzRate.setValue(1.000000000000000)
+        self.SPINHzRate.setValue(000000000000000)
 
         self.horizontalLayout_5.addWidget(self.SPINHzRate)
 
