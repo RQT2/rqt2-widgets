@@ -458,8 +458,32 @@ class Ui_Widget(object):
 
         self.horizontalLayout_24.addWidget(self.COMBOGUIEngine)
 
+        self.horizontalLayout_16 = QHBoxLayout()
+        self.horizontalLayout_16.setObjectName(u"horizontalLayout_16")
+        self.label_10 = QLabel(self.page_5)
+        self.label_10.setObjectName(u"label_10")
+
+        self.horizontalLayout_16.addWidget(self.label_10)
+
+        self.COMBOServerEngine = QComboBox(self.page_5)
+        self.COMBOServerEngine.addItem("")
+        self.COMBOServerEngine.addItem("")
+        self.COMBOServerEngine.setObjectName(u"COMBOServerEngine")
+        self.COMBOServerEngine.setStyleSheet(f"""
+            QComboBox::down-arrow {{
+                image: url({arrow_down_icon});
+            }}
+            QComboBox::down-arrow:on {{
+                image: url({arrow_up_icon});
+            }}
+        """)
+        sizePolicy2.setHeightForWidth(self.COMBOServerEngine.sizePolicy().hasHeightForWidth())
+        self.COMBOServerEngine.setSizePolicy(sizePolicy2)
+
+        self.horizontalLayout_16.addWidget(self.COMBOServerEngine)
 
         self.verticalLayout_9.addLayout(self.horizontalLayout_24)
+        self.verticalLayout_9.addLayout(self.horizontalLayout_16)
 
         self.horizontalLayout_25 = QHBoxLayout()
         self.horizontalLayout_25.setObjectName(u"horizontalLayout_25")
@@ -857,21 +881,25 @@ class Ui_Widget(object):
         self.COMBORenderEngine.setItemText(0, QCoreApplication.translate("Widget", u"OGRE2", None))
         self.COMBORenderEngine.setItemText(1, QCoreApplication.translate("Widget", u"OGRE", None))
 
-        self.label_15.setText(QCoreApplication.translate("Widget", u"Motor de randerizado para la GUI", None))
+        self.label_15.setText(QCoreApplication.translate("Widget", u"Motor de renderizado para la GUI", None))
         self.COMBOGUIEngine.setItemText(0, QCoreApplication.translate("Widget", u"OGRE2", None))
         self.COMBOGUIEngine.setItemText(1, QCoreApplication.translate("Widget", u"OGRE", None))
+
+        self.label_10.setText(QCoreApplication.translate("Widget", u"Motor de renderizado para el servidor", None))
+        self.COMBOServerEngine.setItemText(0, QCoreApplication.translate("Widget", u"OGRE2", None))
+        self.COMBOServerEngine.setItemText(1, QCoreApplication.translate("Widget", u"OGRE", None))
 
         self.label_16.setText(QCoreApplication.translate("Widget", u"API", None))
         self.COMBOAPI.setItemText(0, QCoreApplication.translate("Widget", u"Opengl (default)", None))
         self.COMBOAPI.setItemText(1, QCoreApplication.translate("Widget", u"Vulkan (beta)", None))
         self.COMBOAPI.setItemText(2, QCoreApplication.translate("Widget", u"Metal (Apple only)", None))
 
-        self.label_17.setText(QCoreApplication.translate("Widget", u"API GUI", None))
+        self.label_17.setText(QCoreApplication.translate("Widget", u"API para la GUI", None))
         self.COMBOAPIGUI.setItemText(0, QCoreApplication.translate("Widget", u"Opengl (default)", None))
         self.COMBOAPIGUI.setItemText(1, QCoreApplication.translate("Widget", u"Vulkan (beta)", None))
         self.COMBOAPIGUI.setItemText(2, QCoreApplication.translate("Widget", u"Metal (Apple only)", None))
 
-        self.label_18.setText(QCoreApplication.translate("Widget", u"API Server", None))
+        self.label_18.setText(QCoreApplication.translate("Widget", u"API para el servidor", None))
         self.COMBOAPIServer.setItemText(0, QCoreApplication.translate("Widget", u"Opengl (default)", None))
         self.COMBOAPIServer.setItemText(1, QCoreApplication.translate("Widget", u"Vulkan (beta)", None))
         self.COMBOAPIServer.setItemText(2, QCoreApplication.translate("Widget", u"Metal (Apple only)", None))
